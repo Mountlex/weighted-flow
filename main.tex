@@ -313,7 +313,7 @@ Without weights, the Shortest Remaining Processing Time rule is $O(\log\min\{P,n
 \section{Preliminaries}\label{sec:prelim}
 
 \paragraph{Instances and schedules.}
-An \emph{instance}~$I$ is a finite set of jobs. Each job $j\in I$ has a release time $r_j\ge0$, a size $p_j>0$, and a weight $w_j>0$. We identify a job with the triple $(r_j,p_j,w_j)$, so an algorithm knows nothing about a job but these parameters. For a set~$E$ of jobs, we write $w(E)=\sum_{j\in E}w_j$ and $p(E)=\sum_{j\in E}p_j$.
+An \emph{instance}~$I$ is a finite set of jobs. Each job $j\in I$ has a release time $r_j\ge0$, a size $p_j>0$, and a weight $w_j>0$. We identify a job with the triple $(r_j,p_j,w_j)$, so an algorithm knows nothing about a job but these parameters. For a set~$E$ of jobs, we write $w(E)=\sum_{j\in E}w_j$ and $p(E)=\sum_{j\in E}p_j$. For a positive integer~$n$, we write $[n]=\{1,\dots,n\}$.
 
 A \emph{schedule} of~$I$ assigns to each job $j\in I$ a measurable rate function $x_j\colon[0,\infty)\to[0,1]$ such that $x_j(t)=0$ for $t<r_j$, $\sum_{j\in I}x_j(t)\le1$ for all~$t$, and $\int_0^\infty x_j(t)\dd t\le p_j$. The \emph{remaining size} of~$j$ at time~$t$ is $p_j-\int_0^t x_j(t')\dd t'$, a continuous and non-increasing function of~$t$. Job~$j$ \emph{completes} at the first time~$C_j$ at which its remaining size is zero ($C_j=\infty$ if there is no such time), and it is \emph{unfinished} at time~$t$ if $r_j\le t<C_j$. The weighted flow time of the schedule is
 \[
@@ -485,7 +485,7 @@ for every deterministic online algorithm~$A$. This proves the distributional sta
 
 We prove~\cref{thm:hard} by alternating two operations on hard terminal distributions. Amplification (\cref{sec:amplification}) multiplies the gap by $1+\eta$ for a small $\eta>0$ that depends on the cap, but it increases the cap. Averaging (\cref{sec:averaging}) reduces the cap to the input gap while losing only a little from that gap. Both operations concatenate independent copies at decreasing time scales, which we analyze first.
 
-\subsection{Copies at decreasing time scales}\label{sec:copies}
+\subsection{Copying a terminal distribution}\label{sec:copies}
 
 We define the concatenation of copies and show that an offline schedule can handle the copies separately, whereas an online algorithm faces each copy as a fresh sample of the distribution.
 
@@ -529,22 +529,22 @@ We define the concatenation of copies and show that an offline schedule can hand
     \draw[decorate,decoration={brace,amplitude=4pt,mirror}] (\xe,-1.35) -- (\xg,-1.35)
       node[midway,below=5pt,align=center] {remaining size at time~$u_i$:\\at least $s_i=2S_i+2$};
   \end{tikzpicture}
-  \caption{Copies at decreasing time scales (\cref{lem:copies}), not to scale. Copy~$i$ is stretched by~$s_i$ and starts at~$u_{i-1}$. Conditioning on the grey copies leaves copy~$i$ a fresh sample. Later copies arrive at~$u_i$ or later. A job of~$E_i$ has remaining size at least $s_i=2S_i+2$ at~$u_i$. The later copies take at most~$S_i$ time, so at least $S_i+2$ of this job remains at~$\tau$.}
+  \caption{Copying a terminal distribution (\cref{lem:copies}), not to scale. Copy~$i$ is stretched by~$s_i$ and starts at~$u_{i-1}$. Conditioning on the grey copies leaves copy~$i$ a fresh sample. Later copies arrive at~$u_i$ or later. A job of~$E_i$ has remaining size at least $s_i=2S_i+2$ at~$u_i$. The later copies take at most~$S_i$ time, so at least $S_i+2$ of this job remains at~$\tau$.}
   \label{fig:copies}
 \end{figure}
 
 Let~$\cD$ be a terminal distribution. A \emph{bound} for~$\cD$ is a number $H\ge1$ such that $T\le H$ and $p(I)\le H$ for every terminal instance $(I,T)$ in its support. Fix a bound $H$ for $\cD$ and a positive integer~$m$. 
-We will construct $m$ terminal instances, which we call \emph{copies}, based on $m$ independent samples $(I_1,T_1),\dots,(I_m,T_m)$ of $\cD$ by scaling each sample down. 
-To define these scaling factors, we first define quantities $S_1,\ldots,S_m$, such that each $S_i$ will bound both the duration and the total size of copies $i+1,\dots,m$. Set $S_m=0$ and, for $i=m,\dots,1$, define $s_i=2S_i+2$ and $S_{i-1}=S_i+Hs_i$.
+We will construct $m$ terminal instances, which we call \emph{copies}, based on $m$ independent samples $(I_1,T_1),\dots,(I_m,T_m)$ of $\cD$ by stretching the $i$th sample in time and size by a factor~$s_i$, which decreases with~$i$. 
+To define these factors, we first define quantities $S_0,\dots,S_m$ such that each~$S_i$ will bound both the duration and the total size of copies $i+1,\dots,m$. Set $S_m=0$ and, for $i=m,\dots,1$, define $s_i=2S_i+2$ and $S_{i-1}=S_i+Hs_i$.
 Let $V=S_0$. By construction, for every $i\in[m]$,
 it holds that
 \begin{equation}\label{eq:scales}
   S_i=H\sum_{j=i+1}^m s_j
   \qquad\text{and}\qquad
-  s_i-S_i=S_i+2\, .
+  s_i-S_i=S_i+2\,,
 \end{equation}
-Set $u_0=0$ and $u_i=u_{i-1}+s_iT_i$. For each job $j\in I_i$, \emph{copy~$i$} contains a job with release time $u_{i-1}+s_ir_j$, size $s_ip_j$, and weight~$w_j$. Thus copy~$i$ is~$I_i$ stretched in time and size by~$s_i$, started at~$u_{i-1}$, and ending at its terminal time~$u_i$. The \emph{concatenation}~$\bar I$ is the union of the copies, and $\tau=u_m$ is its \emph{end}. 
-The scales ensure that all copies $i+1,\ldots,m$ after copy~$i$ fit into a time interval of length~$S_i$, while the jobs in copy~$i$'s robust backlog survive (TODO what means survive here) with remaining size at least $S_i+2$ (\cref{fig:copies}). 
+where the first identity also holds for~$i=0$. Set $u_0=0$ and $u_i=u_{i-1}+s_iT_i$. For each job $j\in I_i$, \emph{copy~$i$} contains a job with release time $u_{i-1}+s_ir_j$, size $s_ip_j$, and weight~$w_j$. Thus copy~$i$ is~$I_i$ stretched in time and size by~$s_i$, started at~$u_{i-1}$, and ending at its terminal time~$u_i$. The \emph{concatenation}~$\bar I$ is the union of the copies, and $\tau=u_m$ is its \emph{end}. 
+The scales ensure that copies $i+1,\dots,m$ are released during the time interval $[u_i,\tau)$ of length at most~$S_i$. For a deterministic online algorithm~$A$, the robust backlog of~$A$ in copy~$i$, measured at scale~$s_i$, consists of the jobs of copy~$i$ whose remaining size in~$A(\bar I)$ at the terminal time~$u_i$ is at least~$s_i$. As a job receives at most~$S_i$ processing during $[u_i,\tau)$, these jobs survive the later copies: they are still unfinished at~$\tau$, with remaining size at least $s_i-S_i=S_i+2$ (\cref{fig:copies}).
 
 \begin{lemma}\label{lem:copies}
 Let~$\cD$ be a $(c,M)$-hard terminal distribution, and let~$\bar I$ be the concatenation of $m$ copies of~$\cD$ with end~$\tau$, as above.
@@ -561,25 +561,27 @@ In part~\ref{it:online}, the set~$E_i$ is the robust backlog measured in the uni
 \begin{proof}
 \ref{it:geometry}~A job of copy~$i$ is released at time $u_{i-1}+s_ir_j$ with $0\le r_j<T_i$, hence during $[u_{i-1},u_i)$. Copy~$i'$ has total size $s_{i'}\,p(I_{i'})\le s_{i'}H$, and it is released during the interval $[u_{i'-1},u_{i'})$ of length $s_{i'}T_{i'}\le s_{i'}H$. Summing over $i'>i$ and using~\eqref{eq:scales} proves the bounds on the later copies. Taking $i=0$ gives $p(\bar I)\le V$ and $\tau\le V$.
 
-\ref{it:offline}~During $[u_{i-1},u_i)$, run a schedule of~$I_i$ that leaves weight $B_i=U^*(I_i,T_i)$ unfinished at~$T_i$, stretched in time and size by~$s_i$. Do not process copy~$i$ afterwards. Stretching preserves feasibility, and the time windows are disjoint, so these schedules combine into a schedule of~$\bar I$ that leaves weight~$B_i$ from each copy unfinished at~$\tau$. Hardness gives $\E[B_i]\le1$. (Hardness of what? TODO)
+\ref{it:offline}~During $[u_{i-1},u_i)$, run a schedule of~$I_i$ that leaves weight $B_i=U^*(I_i,T_i)$ unfinished at~$T_i$, stretched in time and size by~$s_i$. Do not process copy~$i$ afterwards. Stretching preserves feasibility, and the time windows are disjoint, so these schedules combine into a schedule of~$\bar I$ that leaves weight~$B_i$ from each copy unfinished at~$\tau$. Since $(I_i,T_i)$ is a sample from the $(c,M)$-hard distribution~$\cD$, we have $\E[B_i]=\E[U^*(I_i,T_i)]\le1$ by~\cref{def:hard}\ref{def:hard-offline}.
 
 \ref{it:online}~Fix $i\in[m]$ and condition on any realization of $(I_1,T_1),\dots,(I_{i-1},T_{i-1})$ of positive probability. The preceding copies and~$u_{i-1}$ are now fixed. Define an algorithm~$A_i$ on an arbitrary input~$I$ by simulating~$A$ on those preceding copies followed by~$I$, stretched by~$s_i$ and started at~$u_{i-1}$. At time~$t$, algorithm~$A_i$ gives a job the rate that~$A$ gives its copy at time~$u_{i-1}+s_it$. Processing that~$A$ assigns to preceding jobs becomes idle time for~$A_i$. These rates define a feasible online schedule, and remaining sizes are divided by~$s_i$.
 
 On input~$I_i$, the simulated instance and~$\bar I$ contain the same jobs released before~$u_i$, because all later copies arrive at~$u_i$ or later. Non-anticipation therefore gives identical remaining sizes at~$u_i$. In particular, $X_i$ is determined by the first~$i$ samples and we have that $X_i=\varphi_{A_i}^M(I_i,T_i)$.
-The algorithm~$A_i$ depends only on the fixed preceding samples, whereas $(I_i,T_i)$ is a fresh sample from~$\cD$. Hardness gives the claimed conditional expectation. (TODO more details what hardness)
+To bound the conditional expectation of~$X_i$, we apply~\cref{def:hard}\ref{def:hard-online} to~$A_i$. Here~$A_i$ is a deterministic online algorithm: if two inputs contain the same jobs with release times before~$t$, the simulated instances contain the same jobs with release times before $u_{i-1}+s_it$, so~$A_i$ inherits non-anticipation from~$A$. Moreover, $A_i$ depends only on the fixed preceding samples, not on~$(I_i,T_i)$. Since the samples are independent, $(I_i,T_i)$ is a fresh sample from~$\cD$: given this realization, its distribution is still~$\cD$. As~$\cD$ is $(c,M)$-hard, we obtain
+\begin{equation*}
+  \E\bigl[X_i\bigm|(I_1,T_1),\dots,(I_{i-1},T_{i-1})\bigr]
+  =\E_{(I,T)\sim\cD}\bigl[\varphi_{A_i}^M(I,T)\bigr]
+  \ge c\,.
+\end{equation*}
 
 Finally, a job of~$E_i$ has remaining size at least~$s_i$ at~$u_i$ and receives at most $\tau-u_i\le S_i$ processing before~$\tau$. Its remaining size at~$\tau$ is therefore at least $s_i-S_i=S_i+2$.
 \end{proof}
 
 \subsection{Amplification}\label{sec:amplification}
 
-Amplification appends a heavy job to $k$ copies of a terminal distribution and hides the terminal time among $k$ checkpoints after the release of this job. Let $M\ge1$ be an integer and $k=2M+1$. Let~$\cD$ be a terminal distribution with a bound~$H$, and let~$\bar I$ be the concatenation of~$k$ copies of~$\cD$, with the notation of \cref{sec:copies} for $m=k$. We add a job~$J$ with release time~$\tau$, size~$V$, and weight~$2M$, and we define the \emph{checkpoints}
+Amplification appends a heavy job to $k$ copies of a terminal distribution and hides the terminal time among $k$ checkpoints after the release of this job. Let $M\ge1$ be an integer and $k=2M+1$. Let~$\cD$ be a terminal distribution with a bound~$H$, and let~$\bar I$ be the concatenation of~$k$ copies of~$\cD$, with the notation of \cref{sec:copies} for $m=k$. We add a job~$J$ with release time~$\tau$, size~$V$, and weight~$2M$, and we define for each $i\in [k]$ the \emph{checkpoint} $h_i=\tau+V+S_i$.
+Since $S_1>S_2>\dots>S_k=0$, we have $h_1>h_2>\dots>h_k=\tau+V$. Independently of the copies, we draw an integer $K\in[k]$ with $\Pr[K\ge i]=2^{1-i}$ for all $i\in[k]$. Equivalently, $K$ counts fair coin flips up to and including the first head, truncated at~$k$. We have $\E[K]=\sum_{i=1}^k\Pr[K\ge i]=2-2^{1-k}$ and $\Pr[K=k]=2^{1-k}$. Set
 \[
-  h_i=\tau+V+S_i\qquad(i\in[k]).
-\]
-Since $S_1>S_2>\dots>S_k=0$, we have $h_1>h_2>\dots>h_k=\tau+V$, so larger indices correspond to earlier checkpoints. Independently of the copies, we draw $K\in[k]$ with $\Pr[K\ge i]=2^{1-i}$ for all $i\in[k]$. Equivalently, $K$ counts fair coin flips up to and including the first head, truncated at~$k$. We have $\E[K]=\sum_{i=1}^k\Pr[K\ge i]=2-2^{1-k}$ and $\Pr[K=k]=2^{1-k}$. Set
-\[
-  \beta=\E[K]-\Pr[K=k]=2-2^{2-k}.
+  \beta:=\E[K]-\Pr[K=k]=2-2^{2-k}.
 \]
 The \emph{amplified} terminal distribution $\Amp_M(\cD)$ is the distribution of the terminal instance $(\bar I\cup\{J\},h_K)$ with all weights divided by~$\beta$.
 
