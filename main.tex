@@ -208,7 +208,7 @@
 \maketitle
 
 \begin{abstract}
-We study online preemptive scheduling of jobs with release times, sizes, and weights on a single machine, with the objective of minimizing total weighted flow time. Bansal and Chan (SODA~2009) showed that no deterministic online algorithm is $O(1)$-competitive for this problem. We show that no randomized online algorithm is $O(1)$-competitive against an oblivious adversary. Quantitatively, every randomized algorithm has competitive ratio $\Omega(\min\{\log\log W,\log\log\log P\})$, where $W$ and $P$ are the ratios between the largest and the smallest weight and size, respectively. We also obtain a high-probability lower bound with the same asymptotic dependence on the instance parameters.
+We study online preemptive scheduling of jobs with release times, sizes, and weights on a single machine, with the objective of minimizing total weighted flow time. Bansal and Chan (SODA~2009) showed that no deterministic online algorithm is $O(1)$-competitive for this problem. We show that no randomized online algorithm is $O(1)$-competitive against an oblivious adversary. Quantitatively, every randomized algorithm has competitive ratio $\Omega(\min\{\log\log W,\log\log\log\min\{P,D\}\})$, where $W$, $P$, and~$D$ are the ratios between the largest and the smallest job weight, size, and density (weight divided by size), respectively. We also obtain a high-probability lower bound with the same asymptotic dependence on the instance parameters.
 
 Following Yao's principle, we construct, for each target ratio, a finite distribution over instances that defeats every deterministic algorithm. The construction compares the algorithm's unfinished weight at a random time not revealed to it with the minimum unfinished weight attainable at that time. Starting from a single job, it alternates two operations. Amplification appends a heavy job and selects a comparison checkpoint using a truncated geometric distribution, forcing the algorithm to leave either the heavy job or its earlier backlog unfinished. Averaging concatenates independent copies at decreasing time scales. A second-moment bound controls the loss from capping the averaged backlog, so we can amplify again.
 \end{abstract}
@@ -241,21 +241,21 @@ No randomized online algorithm for minimizing the total weighted flow time on a 
 \]
 \end{theorem}
 
-Here $F_A(I)$ denotes the weighted flow time of the schedule that $A$ produces on the instance~$I$, and $\OPT(I)$ is the optimal weighted flow time of~$I$. By Yao's principle, the second statement implies the first, and the term~$\gamma$ rules out additive constants. The lower bound holds even when the algorithm learns each job's size and weight at its release, may process several jobs simultaneously at fractional rates, and knows the distribution~$\cD$ in advance. In particular, it may know upper bounds on~$W$ and~$P$, as well as the number of jobs, which is the same for all instances in the support of~$\cD$.
+Here $F_A(I)$ denotes the weighted flow time of the schedule that $A$ produces on the instance~$I$, and $\OPT(I)$ is the optimal weighted flow time of~$I$. By Yao's principle, the second statement implies the first, and the term~$\gamma$ rules out additive constants. The lower bound holds even when the algorithm learns each job's size and weight at its release, may process several jobs simultaneously at fractional rates, and knows the distribution~$\cD$ in advance. In particular, it may know upper bounds on~$W$, $P$, and~$D$, as well as the number of jobs, which is the same for all instances in the support of~$\cD$.
 
-Thus, even with randomization, the competitive ratio has to grow with the parameters of the instance. Our construction gives an explicit, if weak, dependence on~$W$, $P$, and the number~$n$ of jobs.
+Thus, even with randomization, the competitive ratio has to grow with the parameters of the instance. Our construction gives an explicit, if weak, dependence on~$W$, $P$, $D$, and the number~$n$ of jobs.
 
 \begin{theorem}\label{thm:quant}
-For all $W,P,n\ge16$, every randomized online algorithm for weighted flow time has competitive ratio
-\[
-  \Omega\bigl(\min\{\log\log W,\,\log\log\log P,\,\log\log\log n\}\bigr)
-\]
-against an oblivious adversary on instances with at most~$n$ jobs in which the ratios between the largest and the smallest weight and size are at most~$W$ and~$P$, respectively.
+For all $W,P,D,n\ge16$, every randomized online algorithm for weighted flow time has competitive ratio
+\begin{equation*}
+  \Omega\bigl(\min\{\log\log W,\,\log\log\log\min\{P,D,n\}\}\bigr)
+\end{equation*}
+against an oblivious adversary on instances with at most~$n$ jobs and weight, size, and density ratios at most~$W$, $P$, and~$D$, respectively.
 \end{theorem}
 
-In particular, for $W=P=n$, the competitive ratio on instances with at most~$n$ jobs is $\Omega(\log\log\log n)$. The lower bound also holds with high probability. For every $\rho\ge1$, there is an instance on which the algorithm incurs at least $\rho$ times the optimal cost with probability at least $1-2^{-\rho}$, with the same asymptotic bounds on the instance parameters~(\cref{cor:probability}).
+In particular, for $W=P=D=n$, the competitive ratio on instances with at most~$n$ jobs is $\Omega(\log\log\log n)$. The lower bound also holds with high probability. For every $\rho\ge1$, there is an instance on which the algorithm incurs at least $\rho$ times the optimal cost with probability at least $1-2^{-\rho}$, with the same asymptotic bounds on the instance parameters~(\cref{cor:probability}).
 
-The dependence on~$W$ and~$P$ is exponentially weaker than in the deterministic lower bound of Bansal and Chan. To reach the lower bound~$\rho$, each amplification improves the gap only by a factor of $1+2^{-\Theta(\rho)}$. We discuss this dependence, together with the dependence on~$n$, in~\cref{sec:conclusion}.
+The dependence on~$W$ and~$P$ is exponentially weaker than in the deterministic lower bound of Bansal and Chan. To reach the lower bound~$\rho$, each amplification improves the gap only by a factor of $1+2^{-\Theta(\rho)}$. We discuss the parameter dependence in~\cref{sec:conclusion}.
 
 \subsection{Technical overview}\label{sec:overview}
 
@@ -311,7 +311,7 @@ At checkpoint~$h_i$, either~$J$ still has remaining size at least~$1$, or every 
 Amplification improves the gap but increases the cap, making the next improvement exponentially smaller. Averaging brings the cap back down. Given a $(c,M)$-hard distribution, it concatenates~$m$ copies and divides all weights by~$m$. Their capped robust backlogs $X_i\in[0,M]$ need not be independent, but have conditional expectations at least~$c$. A second-moment bound shows that their average, capped at~$c$, has expectation at least $c-M/\sqrt m$ (\cref{lem:averaging}). Thus we can reduce the cap to~$c$ while losing arbitrarily little from the gap.
 
 \paragraph{Putting things together.}
-We fix the cap $M=\lceil4\rho\rceil$ and alternate amplification and averaging. Amplification increases the gap by at least~$\eta$, and averaging loses at most~$\eta/2$ while returning the cap to at most~$M$. Each round therefore adds at least~$\eta/2$ to the gap. After $2^{O(\rho)}$ rounds it reaches~$2\rho$~(\cref{thm:hard}). Each round combines $2^{O(\rho)}$ copies, giving the bounds on~$W$, $P$, and~$n$ in~\cref{thm:quant}.
+We fix the cap $M=\lceil4\rho\rceil$ and alternate amplification and averaging. Amplification increases the gap by at least~$\eta$, and averaging loses at most~$\eta/2$ while returning the cap to at most~$M$. Each round therefore adds at least~$\eta/2$ to the gap. After $2^{O(\rho)}$ rounds it reaches~$2\rho$~(\cref{thm:hard}). Each round combines $2^{O(\rho)}$ copies, giving the bounds on~$W$, $P$, $D$, and~$n$ in~\cref{thm:quant}.
 
 \paragraph{Comparison with the deterministic lower bound.}
 Our construction builds on the deterministic lower bound of Bansal and Chan~\cite{BansalC09}, who introduced the idea of improving a lower bound step by step. Several of our ingredients appear there in adaptive form. They measure unfinished weight using jobs with large remaining size, run subinstances at decreasing scales, release a final heavy job, and convert unfinished weight into flow time with a stream of small jobs. Their adversary observes the algorithm. Each subinstance ends when the algorithm has fallen behind, and the continuation after the heavy job depends on how the algorithm processes it. Our hidden random terminal time makes amplification oblivious. The conditional analysis of copies (\cref{lem:copies}) handles algorithms that adapt to earlier copies, while the cap and averaging make amplification repeatable although its guarantee holds only in expectation.
@@ -742,40 +742,44 @@ Its cap satisfies $(1+\eta)c_{q-1}<M$, because $c_{q-1}<c_N=M/2$ and $\eta<1$. B
 
 By induction on~$q$, all instances in the support of~$\cD_q$ have the same number of jobs: if this number is~$n$ for~$\cD_{q-1}$, then it is $m(kn+1)$ for~$\cD_q$. Flooding (\cref{lem:flooding}) with a common stream length adds the same number of jobs to each instance. Hence our lower bounds hold even for algorithms that know the number of jobs in advance.
 
-\section{Dependence on \texorpdfstring{$W$, $P$, and~$n$}{W, P, and n}}\label{sec:quantitative}
+\section{Dependence on \texorpdfstring{$W$, $P$, $D$, and~$n$}{W, P, D, and n}}\label{sec:quantitative}
 
-For an instance~$I$, let $W(I)=\max_{j\in I}w_j/\min_{j\in I}w_j$ and $P(I)=\max_{j\in I}p_j/\min_{j\in I}p_j$ be its weight and size ratios, and let~$|I|$ be its number of jobs. In this section, all logarithms are binary. We analyze the construction of \cref{sec:iteration} and prove the following refinement of \cref{thm:main}.
+For an instance~$I$, let $W(I)=\max_{j\in I}w_j/\min_{j\in I}w_j$ and $P(I)=\max_{j\in I}p_j/\min_{j\in I}p_j$ be its weight and size ratios. Let $D(I)=\max_{j\in I}(w_j/p_j)/\min_{j\in I}(w_j/p_j)$ be its density ratio, and let~$|I|$ be its number of jobs. In this section, all logarithms are binary. We analyze the construction of \cref{sec:iteration} and prove the following refinement of \cref{thm:main}.
 
 \begin{theorem}\label{thm:quant-refined}
 There is an absolute constant $C\ge1$ such that for all $\rho\ge1$ and $\gamma\ge0$, there is a probability distribution~$\hat\cD$ over finitely many instances such that every instance~$\hat I$ in its support satisfies
-\[
-  W(\hat I)\le2^{2^{C\rho}},\qquad P(\hat I)\le2^{2^{2^{C\rho}}},\qquad\text{and}\qquad|\hat I|\le2^{2^{2^{C\rho}}},
-\]
+\begin{equation*}
+  W(\hat I)\le2^{2^{C\rho}},\qquad \max\{P(\hat I),D(\hat I),|\hat I|\}\le2^{2^{2^{C\rho}}}\,,
+\end{equation*}
 and every deterministic online algorithm~$A$ satisfies $\E_{\hat I\sim\hat\cD}[F_A(\hat I)]\ge \rho\cdot\E_{\hat I\sim\hat\cD}[\OPT(\hat I)]+\gamma$.
 \end{theorem}
 
 \begin{proof}
-Let $M$, $k$, $\eta$, $m$, $N$, and $\cD_0,\dots,\cD_N$ be as in \cref{sec:iteration}. We obtain~$\hat\cD$ by flooding~$\cD_N$. We first bound the weights and sizes, then choose the stream length to obtain the cost bound and count the jobs.
+It suffices to prove the claim for $\gamma=1$. Multiplying all weights by $\lambda=\max\{1,\gamma\}$ preserves $W$, $P$, $D$, and the number of jobs, and it scales both costs by~$\lambda$. For each algorithm~$A$ on the scaled instances, apply the guarantee for $\gamma=1$ to $A'(I)=A(\lambda I)$, as in the weight-scaling argument of~\cref{obs:basic}\ref{obs:scaling}.
 
-It suffices to prove the claim for $\gamma=1$. Multiplying all weights by $\lambda=\max\{1,\gamma\}$ preserves $W$, $P$, and~$n$ and scales both costs by~$\lambda$. For each algorithm~$A$ on the scaled instances, apply the unit-gap guarantee to $A'(I)=A(\lambda I)$, as in the weight-scaling argument of~\cref{obs:basic}\ref{obs:scaling}.
+Let $M$, $k$, $\eta$, $m$, $N$, and $\cD_0,\dots,\cD_N$ be as in \cref{sec:iteration}. We obtain~$\hat\cD$ by flooding~$\cD_N$ (\cref{lem:flooding}) with a common stream length~$L$ chosen below. The stream jobs have weight~$1/2$ and size $1/(2M)$.
 
-We apply~\cref{lem:flooding} to~$\cD_N$, using a common stream length~$L$ specified below. The stream jobs have weight~$1/2$ and size $1/(2M)$.
+\emph{Weights.} All weights in~$\cD_q$ lie in $[(2m)^{-q},1]$. Indeed, the initial weight is~$1$. Each round adds a heavy job of weight~$2M$ and divides all weights by~$\beta m\in[m,2m]$, where $\beta\in[1,2]$ is the normalization of amplification. The claim follows by induction, since $m\ge2M$. The stream weight~$1/2$ lies in the same interval for $q=N\ge1$, so $W(\hat I)\le(2m)^N$.
 
-\emph{Weights.} All weights in~$\cD_q$ lie in $[(2m)^{-q},1]$. Indeed, the initial weight is~$1$, and each round divides all old weights and the new heavy weight~$2M$ by~$\beta m\in[m,2m]$. The claim follows by induction, since $m\ge2M$. The stream weight~$1/2$ lies in the same interval for $q=N\ge1$, so $W(\hat I)\le(2m)^N$.
-
-\emph{Sizes.} The backward recurrence for the copy scales in~\cref{def:concatenation} gives $S_{i-1}+1=(2H+1)(S_i+1)$. A concatenation of~$r$ copies with bound $H\ge3$ therefore has
+\emph{Sizes.} The backward recurrence for the copy scales in~\cref{def:concatenation} gives $S_{i-1}+1=(2H+1)(S_i+1)$. Since $S_r=0$ for a concatenation of~$r$ copies, and $2H+1\le H^2$ for $H\ge3$, such a concatenation with bound $H\ge3$ has
 \begin{equation*}
   V=(2H+1)^r-1\le H^{2r}\,.
 \end{equation*}
-Amplification has total size at most~$2V$ and terminal time at most $\tau+V+S_1\le3V$, so $H^{3k}$ is a bound for its output. Averaging with this bound then gives a bound of $H^{6km}$. Thus, in round~$q$, use $H_{q-1}$ for amplification and $H_{q-1}^{3k}$ for averaging, where
+The output of amplification with bound~$H$ has total size at most~$2V$ and terminal times at most $\tau+V+S_1\le3V$, so $H^{3k}$ is a bound for it, because $3V\le3H^{2k}\le H^{3k}$. Averaging with the bound~$H^{3k}$ then yields total sizes and terminal times at most $(H^{3k})^{2m}=H^{6km}$, by~\cref{lem:copies}\ref{it:geometry}. We therefore fix the bounds as follows: in round~$q$, amplification uses the bound~$H_{q-1}$, and averaging uses the bound~$H_{q-1}^{3k}$, where
 \begin{equation*}
   H_0=3,\qquad H_q=H_{q-1}^{6km}=3^{(6km)^q}\,.
 \end{equation*}
-These integers bound both the terminal times and total sizes in~$\cD_q$. All jobs in~$\cD_q$ also have size at least~$2$. The initial job has size~$2$. Copying stretches sizes by factors $s_i\ge2$, and every heavy job has size $V\ge2H\ge2$. After flooding, all sizes lie in $[1/(2M),H_N]$, so $P(\hat I)\le2MH_N$.
+By induction, $H_q$ is a bound for~$\cD_q$. All jobs in~$\cD_q$ also have size at least~$2$: the initial job has size~$2$, copying stretches sizes by factors $s_i\ge2$, and every heavy job has size $V\ge2H\ge2$. After flooding, all sizes lie in $[1/(2M),H_N]$, so $P(\hat I)\le2MH_N$.
 
-\emph{Number of jobs.} Every instance in the support of~$\cD_N$ consists of jobs of size at least~$2$ and has total size at most~$H_N$, so it has at most $H_N/2$ jobs. Since every weight is at most~$1$, its total weight is at most~$H_N$. The additive term in~\cref{lem:flooding} is therefore at most $2H_N^2$.
+\emph{Densities.} For every instance~$I$, the ratio of any two job densities satisfies $(w_j/p_j)/(w_\ell/p_\ell)=(w_j/w_\ell)(p_\ell/p_j)\le W(I)P(I)$. Hence $D(I)\le W(I)P(I)$, and the preceding bounds give $D(\hat I)\le2MH_N(2m)^N$.
 
-Choose $L=4H_N^2+2$, a multiple of $1/(2M)$ because~$H_N$ and~$M$ are integers. Since~$\cD_N$ is $(2\rho,M)$-hard, the lemma gives $\E[F_A(\hat I)]-\rho\,\E[\OPT(\hat I)]\ge \rho(L/2-2H_N^2)=\rho\ge1$, as required. The stream adds $2M(4H_N^2+2)$ jobs. As $M\ge4$ and $H_N\ge2$, we obtain $|\hat I|\le H_N/2+2M(4H_N^2+2)\le(2MH_N)^2$.
+\emph{Cost and number of jobs.} An instance~$I$ in the support of~$\cD_N$ consists of jobs of size at least~$2$ and has total size at most~$H_N$, so it has at most $H_N/2$ jobs, each of weight at most~$1$. Hence $w(I)\le H_N$, and the additive term $w(I)(T+p(I))$ in~\cref{lem:flooding} is at most $2H_N^2$. Choose $L=4H_N^2+2$, a multiple of $1/(2M)$ because~$H_N$ and~$M$ are integers. Since~$\cD_N$ is $(2\rho,M)$-hard, the lemma gives
+\begin{equation*}
+  \E[F_A(\hat I)]-\rho\,\E[\OPT(\hat I)]
+  \ge2\rho L-\rho\bigl(\tfrac32L+2H_N^2\bigr)
+  =\rho(L/2-2H_N^2)=\rho\ge1
+\end{equation*}
+for every deterministic online algorithm~$A$, as required. The stream adds $2ML=2M(4H_N^2+2)$ jobs. As $M\ge4$ and $H_N\ge2$, we obtain $|\hat I|\le H_N/2+2M(4H_N^2+2)\le(2MH_N)^2$.
 
 \emph{Growth in~$\rho$.} We have $M\le5\rho$ and $k\le11\rho$. The explicit parameters of the iteration give
 \begin{equation*}
@@ -787,25 +791,29 @@ Consequently,
   \log W(\hat I)\le N\log(2m)=2^{O(\rho)},\qquad
   \log\log H_N=N\log(6km)+O(1)=2^{O(\rho)}\,.
 \end{equation*}
-Together with $P(\hat I)\le2MH_N$ and $|\hat I|\le(2MH_N)^2$, these estimates give the claimed bounds with an absolute constant~$C$.
+Together with $P(\hat I)\le2MH_N$, $D(\hat I)\le2MH_N(2m)^N$, and $|\hat I|\le(2MH_N)^2$, these estimates give the claimed bounds with an absolute constant~$C$.
 \end{proof}
 
 \begin{proof}[Proof of \cref{thm:quant}]
-Let $W,P,n\ge16$, and let~$C$ be the constant of~\cref{thm:quant-refined}. Fix a randomized online algorithm~$\cA$ and set $\rho=\min\{\log\log W,\log\log\log P,\log\log\log n\}/C$. This is positive because $W,P,n\ge16$. If $\rho<1$, there is nothing to show, since no algorithm has competitive ratio less than~$1$.
+Let $W,P,D,n\ge16$, and let~$C$ be the constant of~\cref{thm:quant-refined}. Fix a randomized online algorithm~$\cA$ and set $\rho=\min\{\log\log W,\log\log\log\min\{P,D,n\}\}/C$. This is positive because $W,P,D,n\ge16$. If $\rho<1$, there is nothing to show, since no algorithm has competitive ratio less than~$1$.
 
-Otherwise, let $\Gamma\ge0$. By~\cref{thm:quant-refined} with $\gamma=\Gamma+1$ and~\cref{lem:yao}, there is an instance~$\hat I$ with $W(\hat I)\le2^{2^{C\rho}}\le W$, $P(\hat I)\le2^{2^{2^{C\rho}}}\le P$, and $|\hat I|\le2^{2^{2^{C\rho}}}\le n$ such that $\E_{A\sim\cA}[F_A(\hat I)]\ge \rho\cdot\OPT(\hat I)+\Gamma+1$. Hence~$\cA$ is not $\rho$-competitive on this class of instances, proving the claimed lower bound.
+Otherwise, let $\Gamma\ge0$. By~\cref{thm:quant-refined} with $\gamma=\Gamma+1$ and~\cref{lem:yao}, there is an instance~$\hat I$ satisfying
+\begin{equation*}
+  W(\hat I)\le2^{2^{C\rho}}\le W,\qquad
+  \max\{P(\hat I),D(\hat I),|\hat I|\}\le2^{2^{2^{C\rho}}}\le\min\{P,D,n\}
+\end{equation*}
+and $\E_{A\sim\cA}[F_A(\hat I)]\ge \rho\cdot\OPT(\hat I)+\Gamma+1$. Hence~$\cA$ is not $\rho$-competitive on this class of instances, proving the claimed lower bound.
 \end{proof}
 
 \subsection{A high-probability lower bound}\label{sec:probability}
 
-The final averaging step also controls the probability of poor performance. Its capped online backlog has a small expected deficit, while its offline backlog is bounded by an average of independent bounded random variables.
+The last averaging step of the construction also gives a lower bound that holds with high probability.
 
 \begin{corollary}\label{cor:probability}
 There is an absolute constant $C\ge1$ such that, for every $\rho\ge1$, $\gamma\ge0$, and randomized online algorithm~$\cA$, there is an instance~$I$ with
 \begin{equation*}
   W(I)\le2^{2^{C\rho}},\qquad
-  P(I)\le2^{2^{2^{C\rho}}},\qquad
-  |I|\le2^{2^{2^{C\rho}}}
+  \max\{P(I),D(I),|I|\}\le2^{2^{2^{C\rho}}}
 \end{equation*}
 and
 \begin{equation*}
@@ -814,30 +822,30 @@ and
 \end{corollary}
 
 \begin{proof}
-Use the construction of~\cref{sec:iteration} with parameter~$2\rho$ in place of~$\rho$. Thus $M=\lceil8\rho\rceil$, $k=2M+1$, $\eta=2^{-k}$, and $m=(2(k+1)M/\eta)^2$. The last amplified distribution has gap at least $c_N=M/2$ and cap $(k+1)M$. By~\cref{lem:averaging}, the final terminal distribution~$\cD_N$ therefore satisfies
+Use the construction of~\cref{sec:iteration} with~$2\rho$ in place of~$\rho$. Thus $M=\lceil8\rho\rceil$, $k=2M+1$, $\eta=2^{-k}$, and $m=(2(k+1)M/\eta)^2$, and~$\cD_N$ is obtained by averaging $\Amp_M(\cD_{N-1})$. This amplified distribution has gap $(1+\eta)c_{N-1}\ge c_N=M/2$ and cap $(k+1)M$, so it is $(M/2,(k+1)M)$-hard by~\cref{obs:basic}\ref{obs:monotone}. By~\cref{lem:averaging}, $(I,T)\sim\cD_N$ therefore satisfies
 \begin{equation*}
   \E[\varphi_A^{M/2}(I,T)]\ge M/2-\eta/2
 \end{equation*}
-for every deterministic online algorithm~$A$. Since $M/2\ge4\rho$ and $0\le\varphi_A^{M/2}\le M/2$, Markov's inequality yields
+for every deterministic online algorithm~$A$. Since $\varphi_A^M\ge\varphi_A^{M/2}$, $0\le\varphi_A^{M/2}\le M/2$, and $M/2\ge4\rho$, Markov's inequality applied to $M/2-\varphi_A^{M/2}(I,T)$ yields
 \begin{equation*}
   \Pr\bigl[\varphi_A^M(I,T)<3\rho\bigr]
   \le\Pr\bigl[M/2-\varphi_A^{M/2}(I,T)>M/2-3\rho\bigr]
   \le\frac{\eta}{2\rho}\,.
 \end{equation*}
 
-For the offline bound, let $B_1,\dots,B_m$ be the values of~$U^*$ on the independent amplified samples entering the last averaging step. By~\cref{lem:amplification}, $0\le B_i\le2M$ and $\E[B_i]\le1$, so $\operatorname{Var}(B_i)\le\E[B_i^2]\le2M$. The offline schedule of~\cref{lem:copies}\ref{it:offline}, with weights divided by~$m$, gives $U^*(I,T)\le m^{-1}\sum_iB_i$. Independence and Chebyshev's inequality therefore imply
+For the offline side, let $B_1,\dots,B_m$ be the values of~$U^*$ on the independent amplified samples entering the last averaging step. By~\cref{lem:amplification}, $0\le B_i\le2M$ and $\E[B_i]\le1$, so $\operatorname{Var}(B_i)\le\E[B_i^2]\le2M$. The offline schedule of~\cref{lem:copies}\ref{it:offline}, with weights divided by~$m$, gives $U^*(I,T)\le m^{-1}\sum_iB_i$. Independence and Chebyshev's inequality therefore imply
 \begin{equation*}
   \Pr\bigl[U^*(I,T)>2\bigr]\le\frac{2M}{m}\,.
 \end{equation*}
-Consequently, for every deterministic~$A$, with probability at least $1-\eta/(2\rho)-2M/m\ge1-\eta$, we have
+Since $\eta/(2\rho)\le\eta/2$ and $2M/m=\eta^2/(2(k+1)^2M)\le\eta/2$, every deterministic~$A$ satisfies
 \begin{equation*}
   \varphi_A^M(I,T)\ge3\rho
   \qquad\text{and}\qquad
-  U^*(I,T)\le2\,.
+  U^*(I,T)\le2
 \end{equation*}
-Here $2M/m=\eta^2/(2(k+1)^2M)\le\eta/2$, and $\eta=2^{-k}\le2^{-\rho}$.
+with probability at least $1-\eta\ge1-2^{-\rho}$, where the last inequality uses $k\ge\rho$.
 
-Flood~$\cD_N$ with the length $L=4H_N^2+2$ used in the proof of~\cref{thm:quant-refined}. On the event above, the pointwise bounds of~\cref{lem:flooding} give
+Flood~$\cD_N$ with the stream length $L=4H_N^2+2$ from the proof of~\cref{thm:quant-refined}, applied to the construction with~$2\rho$. On the event above, the pointwise bounds of~\cref{lem:flooding} give
 \begin{equation*}
   F_A(\hat I)-\rho\,\OPT(\hat I)
   \ge3\rho L-\rho\bigl(\tfrac52L+2H_N^2\bigr)
@@ -845,18 +853,18 @@ Flood~$\cD_N$ with the length $L=4H_N^2+2$ used in the proof of~\cref{thm:quant-
 \end{equation*}
 Thus the resulting finite distribution~$\hat\cD$ satisfies $\Pr_{\hat I\sim\hat\cD}[F_A(\hat I)\ge \rho\,\OPT(\hat I)+1]\ge1-2^{-\rho}$ for every deterministic~$A$. The parameter bounds follow from~\cref{thm:quant-refined}, with an absolute constant enlarged to account for the use of~$2\rho$. Scaling all weights as in its proof replaces the additive term~$1$ by any~$\gamma\ge0$, preserving the parameter bounds and the probability guarantee for every deterministic algorithm.
 
-Finally, average the indicators of these cost events over $A\sim\cA$. Since the instance distribution has finite support,
+Finally, take the expectation over $A\sim\cA$. Since~$\hat\cD$ has finite support, the two expectations can be exchanged, which gives
 \begin{equation*}
   \E_{\hat I\sim\hat\cD}
   \left[\Pr_{A\sim\cA}\bigl[F_A(\hat I)\ge \rho\,\OPT(\hat I)+\gamma\bigr]\right]
   \ge1-2^{-\rho}\,.
 \end{equation*}
-For some instance in the support, the cost event therefore has probability at least $1-2^{-\rho}$.
+Hence some instance in the support of~$\hat\cD$ satisfies the claim.
 \end{proof}
 
 \section{Concluding remarks}\label{sec:conclusion}
 
-We have shown that randomization does not allow a constant competitive ratio for online weighted flow time on a single machine. Our lower bound of $\Omega(\min\{\log\log W,\log\log\log P\})$ is exponentially weaker than the deterministic lower bound of Bansal and Chan~\cite{BansalC09}. The best known upper bound is $O(\log\min\{P,D,W\})$, achieved by a deterministic algorithm~\cite{AzarT18}. The weak dependence on~$W$ and~$P$ stems from the amplification step. Each round retains an additive increase of $\eta/2$, where $\eta=2^{-(2M+1)}$ is exponentially small in the cap~$M$. Our construction therefore uses $2^{\Theta(\rho)}$ rounds to reach the gap~$2\rho$. An amplification step whose improvement~$\eta$ is only polynomially small in the cap would lead to lower bounds that are polynomial in $\log W$ and $\log\log P$. More generally, it remains open whether randomized algorithms can beat the deterministic lower bound, for example by achieving a competitive ratio of $O(\log\log W)$.
+We have shown that randomization does not allow a constant competitive ratio for online weighted flow time on a single machine. Our lower bound is $\Omega(\min\{\log\log W,\log\log\log\min\{P,D\}\})$. Its dependence on~$W$ and~$P$ is exponentially weaker than in the deterministic lower bound of Bansal and Chan~\cite{BansalC09}. The best known upper bound is $O(\log\min\{P,D,W\})$, achieved by a deterministic algorithm~\cite{AzarT18}. The weak parameter dependence stems from the amplification step. Each round retains an additive increase of $\eta/2$, where $\eta=2^{-(2M+1)}$ is exponentially small in the cap~$M$. Our construction therefore uses $2^{\Theta(\rho)}$ rounds to reach the gap~$2\rho$. An amplification step whose improvement~$\eta$ is only polynomially small in the cap would lead to lower bounds that are polynomial in $\log W$ and $\log\log P$. More generally, it remains open whether randomized algorithms can beat the deterministic lower bound, for example by achieving a competitive ratio of $O(\log\log W)$.
 
 In terms of the number~$n$ of jobs, our lower bound $\Omega(\log\log\log n)$ is weaker still, because flooding dominates the number of jobs. Each round multiplies the number of jobs by at most $m(k+1)$, so the instances in the support of~$\cD_N$ have at most $(m(k+1))^N=2^{2^{O(\rho)}}$ jobs. The stream must be long enough to make the cost before the terminal time negligible, and it consists of more than~$P$ jobs. A conversion of gaps at the terminal time into gaps in flow time that adds only polynomially many jobs would therefore give $\Omega(\log\log n)$. Whether a single machine admits an $O(\log n)$-competitive algorithm remains open. On $m\ge2$ machines, the lower bound of Chekuri, Khanna, and Zhu~\cite{ChekuriKZ01} rules out a polylogarithmic dependence on~$n$.
 
