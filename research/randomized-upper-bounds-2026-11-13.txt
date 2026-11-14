@@ -1,0 +1,312 @@
+Randomized upper bounds for weighted flow time: research notes
+13 November 2026
+
+STATUS AND SCOPE
+
+This is a research record, not a proposed manuscript addition. No improved
+general upper bound was proved. The targets examined were poly(log log W)
+and O(log log P), or more generally poly(log log P), for clairvoyant,
+preemptive, unit-speed scheduling against an oblivious adversary.
+
+The literature search located O(log min{W,P,D}) as the published baseline
+in this model, from Azar--Touitou. It did not locate the requested improved
+randomized guarantee. This is a search finding, not a proof of absence.
+Source: https://arxiv.org/abs/1712.10273
+
+The SODA 2026 paper by Gupta--Kumar--Panigrahi--Wang gives a useful new
+dual-fitting analysis of the weighted algorithm, but its main improved
+guarantee concerns unweighted flow with uncertain job sizes.
+Source: https://doi.org/10.1137/1.9781611978971.47
+Author PDF: https://users.cs.duke.edu/~debmalya/papers/soda26-flowtime.pdf
+
+1. A PRECISE DUAL-FITTING TARGET
+
+Let K be the number of rounded weight classes, so K=O(1+log W).
+The weighted analysis in Section 6 of the SODA 2026 paper constructs a
+dual objective covering the maximum unfinished weight of one class.
+Its congestion at any job j is at most 11 w_j. The K factor enters when
+bounding the sum of all class backlogs by K times the largest backlog.
+Improving the constant 11 would therefore not improve the asymptotics.
+
+Here is a sufficient expected-dual statement. Fix the entire input I
+and a time t. All jobs below are released by t, and sets S are nonempty.
+For random seed omega, allow a reduced instance with
+p_j^omega <= p_j and the same releases and weights. For a set S put
+
+  e_omega(S) = max{0, sum_{j in S} p_j^omega - (t-min_{j in S} r_j)}.
+
+For nonnegative random dual variables y_S^omega, define
+
+  D_omega = sum_S e_omega(S) y_S^omega,
+  L_j^omega = sum_{S containing j}
+                min{p_j^omega,e_omega(S)} y_S^omega.
+
+If
+
+  E D_omega >= E U_A(I,t),
+  E L_j^omega <= c w_j  for every fixed original job j,
+
+then E U_A(I,t) <= c U_O(I,t) for every fixed comparison schedule O.
+Indeed, O's survivor indicators z_j are feasible for every reduced
+instance's knapsack-cover inequalities. Therefore, pathwise,
+
+  D_omega <= sum_j z_j L_j^omega.
+
+Taking expectations gives the result because z_j is independent of the
+algorithm's seed. Integrating over t yields a competitive bound.
+
+Thus pathwise dual feasibility is unnecessary. A target for an improved
+algorithm is to cover the SUM of expected class backlogs while giving
+each fixed job only poly(log K) expected dual load.
+
+The missing part is substantial: no online policy and dual construction
+with those properties was found. One cannot keep the existing algorithm
+and assume its K loss vanishes under randomization. Also, after averaging
+over a distribution of INPUTS, z_j depends on the input; an unconditional
+bound on average dual load cannot simply be multiplied by E z_j.
+
+For the size target, K=O(1+log P) classes would make an O(log K) loss into
+O(1+log log P). A balanced hierarchy has this depth, but that geometric
+observation alone supplies no competitive analysis.
+
+2. STATIC BATCHES ALREADY ADMIT CONSTANT FACTORS
+
+Suppose all jobs are available at time zero. Write p(S), w(S) for total
+size and weight. In reverse time, a target volume q has optimum cost
+
+  C(q) = min{w(S): p(S) >= q}.
+
+For budgets B_i = w_min 2^i, choose S_i maximizing p(S_i) subject to
+w(S_i)<=B_i. Append all previously unlisted jobs of S_i, then continue
+to the next budget. For the first i with B_i>=C(q), at least q volume
+has been listed, while the total listed weight is less than
+
+  sum_{h<=i} B_h < 2 B_i <= 4 C(q).
+
+Reverse this order. Its unfinished weight at EVERY deadline is at most
+four times the deadline optimum. The argument uses exact knapsack
+oracles. Rounding weights down in units epsilon B/n gives a polynomial
+oracle with volume at least the exact B-budget optimum and weight at
+most (1+epsilon)B, giving factor 4(1+epsilon).
+
+Budgets B_i=w_min exp(i+U), with U uniform on [0,1], instead give expected
+factor e. For each fixed C, the expected sum of geometric bids through
+the first bid at least C is at most e C. With weight rounding one obtains
+e(1+epsilon). This is the standard randomized online-bidding calculation,
+not a novelty claim.
+Source: Chrobak--Kenyon--Noga--Young, Theorem 4:
+https://www.cs.ucr.edu/~neal/publication/Chrobak06Online.pdf
+
+A constant-factor static deadline schedule was already known: Becchetti
+et al., JDA 2006, Theorem 12 gives factor 24. Their conclusion explicitly
+suggests recomputing a residual schedule at each release. Thus simply
+proposing recomputation would not be a new algorithmic insight.
+Source: https://doi.org/10.1016/j.jda.2005.12.001
+
+The true difficulty is making such decisions consistent across arrivals.
+There is no competitive proof here for recomputing these orders online.
+
+3. WHY LOCAL RANDOMIZED OPTIMA DO NOT AUTOMATICALLY COUPLE
+
+All jobs are released at zero. Let a,b have (p,w)=(2,1), and c have
+(p,w)=(3,2). At time 2 prescribe the completed-set distribution that
+chooses {a} or {b} with equal probability. At time 4 prescribe the
+distribution that chooses {a,b} or {c} with equal probability.
+
+Both distributions are supported on feasible, locally optimal completed
+sets. Every job's completion probability is nondecreasing. Nevertheless
+no random schedule realizes both distributions: on every sample path,
+a or b has completed by time 2, which prevents c from completing by
+time 4 because their combined processing requirement is 5.
+
+Consequently, locally feasible completion marginals plus monotonicity
+are insufficient. A rounding argument must respect the distribution
+of residual processing states and how it evolves through time.
+
+An equivalent Bayesian pitfall is to resample a clairvoyant optimal
+continuation when an arrival reveals information. The new posterior
+may require changing work that has already been done. An explicit
+coupling or repair-cost argument is needed.
+
+4. A SIMPLE COUNTEREXAMPLE TO FRESH RANDOM HIERARCHIES
+
+Consider a binary node whose left child has smaller jobs. Let L,R be
+the total unfinished weights in its children. At each completion,
+choose left with probability min{1,L/R}, otherwise right, and run the
+chosen job to completion. Use SRPT within each leaf class. This is
+equivalent to a fresh Pareto bias
+on the smaller-size child.
+
+At time zero release one left job (p,w)=(1,1) and n right jobs
+(p,w)=(2,M), with M>=2. While q right jobs remain and left has not
+been selected, the next selection chooses left with probability
+1/(qM). Hence
+
+  Pr[left is served before all right jobs]
+    = 1 - product_{q=1}^n (1-1/(qM))
+    >= 1 - exp(-H_n/M).
+
+At the FIXED deadline T=2n, OPT completes every right job and leaves
+weight 1. If the algorithm served left, it leaves a right job of
+weight M with one unit of remaining processing. Taking n=ceil(exp M)
+therefore gives expected robust backlog Omega(M).
+
+The deadline instance has P=2. To turn this into a flow-time lower
+bound, add a sufficiently long flooding stream of jobs of weight 1/2
+and size 1/(2M), released back-to-back starting at T. The robust backlog
+argument then gives expected competitive loss Omega(M). In the FINAL
+flow instance P=4M, W=2M, and D=M. In particular, this defeats the
+proposed algorithm's poly(log log P) and poly(log log W) guarantees.
+It does NOT establish a flow lower bound at P=2.
+
+Resampling at half-processing milestones also does not repair this
+example: before the first left selection, all full-right-completion
+opportunities remain; a selected left job receives at least half a
+unit of work. The remaining heavy work at T is then at least half a
+unit, concentrated in one unfinished right job by within-class SRPT,
+and the flooding scale changes only by a constant factor.
+
+This counterexample identifies why unequal completion weights matter.
+Each right completion removes weight M but gives the light job another
+independent chance. The accumulated probability is harmonic in n.
+
+5. OTHER NEGATIVE CHECKS
+
+These are obstructions to specific families, not impossibility results
+for the desired bounds.
+
+* Fixed, input-independent random multipliers on weight-class backlogs,
+  with fixed tie-breaking, do not suffice. With K classes of equal total
+  weight, choose uniformly
+  which class contains long jobs; all other classes contain short jobs.
+  The long class blocks all classes below it in the fixed random rank.
+  Averaging its rank gives Omega(K) unfinished weight relative to OPT.
+
+* Fixed, once-sampled iid positive per-job multiplicative perturbations
+  of remaining density fail already with two jobs. A short (p,w)=(1,2)
+  job and a long (W,W) job have a constant chance of being processed
+  short-first. At T=W this leaves weight W instead of 2.
+
+* Proportional sharing among weight classes can fail even for bounded
+  weight ratio: n unit jobs of weight 1 and a long job of weight 2
+  leave Theta(log n) small-job backlog at T=n under fluid sharing.
+  Infinitesimally frequent resampling with those same service
+  probabilities has the same service-loss issue.
+
+* Fixed local biases in a binary size hierarchy incur products of
+  losses along a path. Independent fixed Pareto biases also admit
+  a multilevel obstruction with exponentially growing expected backlog
+  in the depth. Refreshing only when total node mass halves retains
+  that obstruction: on the bad event the relevant masses never halve.
+
+Small numerical tests initially made some hierarchical rules look
+promising. The explicit multiplicity example above overturns those
+small-instance observations; they should not be cited as support for
+a competitive conjecture.
+
+6. WHAT CAN BE PROVED IN A RESTRICTED MERGER
+
+For integer 0<=L<=R, consider transitions
+
+  (L,R) -> (L-1,R) with probability L/R,
+  (L,R) -> (L,R-1) otherwise.
+
+This is an urn with R balls, L blue: selecting a blue ball turns it
+red; selecting a red ball deletes it. Give every ball independent
+rate-one exponential clocks. From initial state (L_0,R_0),
+
+  E L(t)=L_0 exp(-t),
+  E R(t)=(R_0+L_0 t) exp(-t).
+
+For 1<=r<=R_0/2, let tau_r be the first time R=r. Choosing t so that
+E R(t)=2r and applying a lower-tail Chernoff bound gives
+
+  E L(tau_r)
+    <= 2r/[1+ln(R_0/(2r))] + L_0 exp(-r/4).
+
+Proof: Pr(tau_r<t)<=exp(-r/4), L decreases, and
+L_0 exp(-t)=2r/(R_0/L_0+t), with t>=ln(R_0/(2r)). If L_0=0 the
+conclusion is immediate. This is a rigorous logarithmic suppression
+effect, but it only models EQUAL weight decrements. Section 4 explains
+why it does not extend automatically to weighted job completions.
+
+Another easy special case: highest-weight-first is 2b-competitive for
+power-of-two weights if at most b jobs of each weight are pending in
+its schedule at any time. For every weight threshold it minimizes
+the unfinished PROCESSING VOLUME above the threshold. Hence its
+maximum pending weight is at most OPT's maximum pending weight.
+Summing at most b jobs per geometric class gives the 2b bound.
+This leaves the large-multiplicity case unresolved.
+
+7. STABILITY OF KNAPSACK PROFILES IS A CONCRETE OPEN STEP
+
+The union of optimal knapsack sets is not stable under arrivals.
+Initially let a=(p,w)=(X,1), b=(X+1/2,2), with X>1.
+At budgets 1 and 2, the maximizing sets are {a} and {b}, whose union
+has volume 2X+1/2. Add c=(1,1). The maximizing sets become {a} and
+{a,c}; their union has volume X+1. A size-one arrival has reduced the
+union-volume profile by X-1/2, arbitrarily large.
+
+A restricted repair is to retain a budget-B set until a replacement
+improves volume by a factor 1+epsilon. If A is arrival volume and Q
+is service given to the retained set since its last exact update,
+then its discarded current volume at such a replacement is at most
+(A+Q)/epsilon. For frozen processing sizes, Q=0.
+
+However, summing this charge over geometric budgets can charge the
+same arrival or processing many times, recovering a logarithmic
+parameter loss. No bound reducing that accumulation to log log W
+or log log P was proved.
+
+A single merge is easier: at the time of merging residual batches,
+recompute a c-universal static order on their union. After any amount
+of subsequent cumulative service, its residual weight is at most c
+times that under any allocation of the same service among the old
+batches. But applying this comparison repeatedly can multiply c once
+per merge. A useful merging theorem must instead make losses additive
+across levels or telescope through a potential.
+
+8. MOST CONCRETE NEXT PROOF TARGET
+
+Try persistent random processing thresholds with priorities independent
+of the random execution, and analyze their conditional tails via a
+one-random-coordinate monotonicity lemma. The original RMLF analysis
+offers a proof template: after all other randomness is fixed, survival
+is a downward-closed event in a job's promotion threshold. This handles
+the correlation between random choices and jobs remaining alive.
+Source: Becchetti--Leonardi, JACM 2004, Lemmas 7--8:
+https://doi.org/10.1145/1008731.1008732
+
+In abstract form, if E={T<=b}, b<=p, and the CDF satisfies
+F(p-delta)>=cF(p), then Pr(T<=p-delta | E)>=c. The missing work is
+to enforce such a monotonicity property under weighted arrivals and
+use it to prove the expected dual-congestion bound in Section 1.
+
+This is a research direction, not an algorithm with an established
+ratio. The nonclairvoyant RMLF theorem itself has an O(log n) bound
+for unweighted jobs and does not give the desired weighted result.
+Its tail parameters depend on the arrival index to control rare events;
+replacing n by the number of classes is unjustified when one class may
+contain arbitrarily many jobs.
+
+9. COMPUTATIONAL CHECKS AND LIMITS
+
+Scratch programs in /tmp used exact integer-time offline dynamic
+programming on small instances, exhaustive subset knapsack oracles,
+and a finite arrival-prefix minimax game. The static oracle was checked
+against every integer deadline on random seven-job batches. The small
+prefix game reached primal/dual agreement at 11/8 for one depth-three
+restricted family; larger runs did not close their gap. These are
+checks of restricted computations, not general upper bounds.
+
+Scratch source names: wf_upper_search.cpp, wf_tree_search.cpp,
+wf_static_oracle.py, wf_deadline_game.py. The mathematical conclusions
+above do not depend on extrapolating numerical growth rates.
+
+CONCLUSION
+
+Neither target was resolved. The useful outputs are a precise expected
+dual certificate, a constant-factor static primitive, explicit failures
+of several random-priority families, and a clearer identification of the
+unresolved issue: maintaining a causally valid schedule and controlling
+random decisions when jobs have very different weights and arrive later.
