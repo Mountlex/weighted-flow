@@ -208,26 +208,26 @@
 \maketitle
 
 \begin{abstract}
-We study online preemptive scheduling of jobs with release times, sizes, and weights on a single machine, with the objective of minimizing total weighted flow time. Bansal and Chan (SODA~2009) showed that no deterministic online algorithm is $O(1)$-competitive for this problem. We show that no randomized online algorithm is $O(1)$-competitive against an oblivious adversary. This resolves the long-standing open question of whether online weighted flow time admits an $O(1)$-competitive algorithm. Quantitatively, every randomized algorithm has competitive ratio $\Omega(\min\{\log\log W,\log\log\log\min\{P,D\}\})$, where $W$, $P$, and~$D$ are the ratios of the largest to the smallest job weight, size, and density (weight divided by size), respectively. We also obtain a high-probability lower bound with the same asymptotic dependence on the instance parameters.
+We study online preemptive scheduling of jobs with release times, sizes, and weights on a single machine, with the objective of minimizing weighted flow time. Bansal and Chan (SODA~2009) showed that no deterministic online algorithm is $O(1)$-competitive for this problem. We show that no randomized online algorithm is $O(1)$-competitive against an oblivious adversary. This resolves the long-standing open question of whether online weighted flow time admits an $O(1)$-competitive algorithm. Quantitatively, we prove that every randomized algorithm has a  competitive ratio in $\Omega(\min\{\log\log W,\log\log\log\min\{P,D\}\})$, where $W$, $P$, and~$D$ are the ratios of the largest to the smallest job weight, size, and density (weight divided by size), respectively. We also obtain a high-probability lower bound with the same asymptotic dependence on the instance parameters.
 
 %Following Yao's principle, we construct, for each target ratio, a finite distribution over instances that defeats every deterministic algorithm. The construction compares the algorithm's active weight at a random time not revealed to it with the minimum active weight attainable at that time. Starting from a single job, it alternates two operations on independent copies at decreasing time scales. Amplification appends a heavy job and draws the comparison time from a truncated geometric distribution over checkpoints, forcing the algorithm to leave either the heavy job or its earlier backlog unfinished. Its gain is exponentially small in a cap on the backlog weight that we count, and it raises this cap. Averaging divides the weights of many copies by their number, and a second-moment bound shows that this restores the cap at a small loss.
 \end{abstract}
 
 \section{Introduction}
 
-Total weighted flow time is a classical objective in online scheduling: jobs arrive over time, and the goal is to minimize the total time they spend in the system, weighted by their importance~\cite{PruhsST04}. We study this problem on a single machine. Each job~$j$ has a release time~$r_j$, a size~$p_j$, and a weight~$w_j$, which become known at time~$r_j$. The machine processes at most one job at a time, and a job may be preempted and resumed later. If job~$j$ completes at time~$C_j$, its flow time is $C_j-r_j$, and the objective is to minimize $\sum_j w_j(C_j-r_j)$. At each time, an online algorithm decides which job to process, without knowledge of future jobs. It is \emph{$\rho$-competitive} if, on every instance, its (expected) cost is at most $\rho$ times the optimal cost, up to an additive constant.
+Total weighted flow time is a classical objective in online scheduling: jobs arrive over time, and the goal is to minimize the total time they spend in the system, weighted by their importance~\cite{PruhsST04}. We study this problem on a single machine. Each job~$j$ has a release time~$r_j$, a size~$p_j$, and a weight~$w_j$, which become known at time~$r_j$. The machine processes at most one job at a time, and a job may be preempted and resumed later. If job~$j$ completes at time~$C_j$, its flow time is $C_j-r_j$, and the objective is to minimize $\sum_j w_j(C_j-r_j)$. At each time, an online algorithm decides which job to process, without knowledge of future jobs. It is \emph{$\rho$-competitive} if, on every instance, its (expected) cost is at most $\rho$ times the optimal cost.
 
 With unit weights, always processing the job with the shortest remaining processing time (SRPT) is optimal, even online~\cite{Schrage68}. Weights make the problem much harder. Even the offline problem is strongly NP-hard~\cite{LabetoulleLLR84}, and a polynomial-time approximation scheme~\cite{ArmbrusterRW26} was found only after a long line of work~\cite{ChekuriK02,BansalP14,BatraGK23,FeigeKL19,RohwedderW21}.
 
-Online, the best known upper bounds on the competitive ratio grow logarithmically with the parameters of the instance. Let $W$, $P$, and~$D$ be the ratios of the largest to the smallest job weight, size, and density $w_j/p_j$, respectively. The first nontrivial algorithm, by Chekuri, Khanna, and Zhu~\cite{ChekuriKZ01}, is $O(\log^2P)$-competitive and needs to know~$P$ in advance. Bansal and Dhamdhere~\cite{BansalD07} gave an $O(\log W)$-competitive algorithm. Azar and Touitou~\cite{AzarT18} gave $O(\log P)$- and $O(\log D)$-competitive algorithms and combined them with the algorithm of Bansal and Dhamdhere into an $O(\log\min\{P,D,W\})$-competitive deterministic algorithm. A constant competitive ratio becomes possible with \emph{speed augmentation}~\cite{KalyanasundaramP00,PhillipsSTW02}, where the algorithm runs on a slightly faster machine than the one used by the optimal schedule. On a machine of speed~$1+\eps$, the Highest Density First rule, which always processes a released and uncompleted job of largest density, is $O(1/\eps)$-competitive~\cite{BecchettiLMP06}.
+The best known upper bounds on the competitive ratio for online algorithms for this problem grow logarithmically with the parameters of the instance. Let $W$, $P$, and~$D$ be the ratios of the largest to the smallest job weight, size, and density $w_j/p_j$, respectively. The first nontrivial algorithm, by Chekuri, Khanna, and Zhu~\cite{ChekuriKZ01}, is $O(\log^2P)$-competitive and needs to know~$P$ in advance. Bansal and Dhamdhere~\cite{BansalD07} gave an $O(\log W)$-competitive algorithm. Azar and Touitou~\cite{AzarT18} gave $O(\log P)$- and $O(\log D)$-competitive algorithms and combined them with the algorithm of Bansal and Dhamdhere into an $O(\log\min\{P,D,W\})$-competitive deterministic algorithm. A constant competitive ratio becomes possible with \emph{speed augmentation}~\cite{KalyanasundaramP00,PhillipsSTW02}, where the algorithm runs on a slightly faster machine than the one used by the optimal schedule. On a machine of speed~$1+\eps$, the Highest Density First rule, which always processes a released and uncompleted job of largest density, is $O(1/\eps)$-competitive for every constant $\eps>0$~\cite{BecchettiLMP06}.
 
 Pruhs, Sgall, and Torng~\cite{PruhsST04} called the existence of an $O(1)$-competitive algorithm perhaps the most intriguing open question about flow time in online scheduling. It was widely believed that such an algorithm exists, but Bansal and Chan~\cite{BansalC09} showed that every deterministic online algorithm has a competitive ratio of
 \begin{equation*}
   \Omega\biggl(\min\biggl\{\sqrt{\frac{\log W}{\log\log W}},\,\sqrt{\frac{\log\log P}{\log\log\log P}}\biggr\}\biggr)\,.
 \end{equation*}
-Their proof starts from the trivial lower bound of one and improves it step by step, using an adaptive adversary that chooses the next jobs in response to the algorithm's scheduling decisions. A randomized algorithm, however, is evaluated against an \emph{oblivious} adversary, which fixes the instance in advance, without knowing the algorithm's random choices. The adaptive construction of Bansal and Chan therefore does not apply.
+Their proof starts from the trivial lower bound of one and improves it step by step, using an adaptive adversary that chooses the next jobs in response to the algorithm's scheduling decisions. A randomized algorithm, however, is evaluated against an \emph{oblivious} adversary, which fixes the instance in advance, without knowing the algorithm's random choices. The adaptive construction of Bansal and Chan~\cite{BansalC09} therefore does not apply.
 
-Randomization is provably powerful in online scheduling. For example, when job sizes remain unknown until completion (\emph{nonclairvoyant} scheduling), every deterministic algorithm for unweighted flow time on a single machine has competitive ratio $\Omega(n^{1/3})$, where $n$ is the number of jobs~\cite{MotwaniPT94}. A randomized version of the multilevel feedback algorithm~\cite{KalyanasundaramP03}, however, is $O(\log n)$-competitive~\cite{BecchettiL04}, which is best possible~\cite{MotwaniPT94}.
+Randomization is provably powerful in online scheduling. For example, when job sizes remain unknown until completion (\emph{nonclairvoyant} scheduling), every deterministic algorithm for unweighted flow time on a single machine has competitive ratio $\Omega(n^{1/3})$, where $n$ is the number of jobs~\cite{MotwaniPT94}. A randomized version of the multilevel feedback algorithm~\cite{KalyanasundaramP03}, however, is $O(\log n)$-competitive~\cite{BecchettiL04}, which is best possible up to constants~\cite{MotwaniPT94}.
 
 For weighted flow time on a single machine, the best lower bound for randomized algorithms that we are aware of is the constant~$4/3$~\cite{ChekuriKZ01,EpsteinS03}. Thus it has remained open whether a randomized online algorithm can be $O(1)$-competitive.
 
@@ -235,11 +235,11 @@ For weighted flow time on a single machine, the best lower bound for randomized 
 We answer this question negatively.
 
 \begin{theorem}\label{thm:main}
-No randomized online algorithm for minimizing the total weighted flow time on a single machine is $O(1)$-competitive against an oblivious adversary. More precisely, for all $\rho\ge1$ and $\gamma\ge0$, there is a probability distribution~$\cD$ over finitely many instances such that every deterministic online algorithm~$A$ satisfies $\E_{I\sim\cD}\bigl[F_A(I)\bigr]\ge \rho\cdot\E_{I\sim\cD}\bigl[\OPT(I)\bigr]+\gamma$.
+No randomized online algorithm for minimizing weighted flow time on a single machine is $O(1)$-competitive against an oblivious adversary. More precisely, for every $\rho\ge1$, there is a probability distribution~$\cD$ over finitely many nonempty instances such that every deterministic online algorithm~$A$ satisfies $\E_{I\sim\cD}\bigl[F_A(I)\bigr]\ge \rho\cdot\E_{I\sim\cD}\bigl[\OPT(I)\bigr]$.
 \end{theorem}
 
-Here $F_A(I)$ denotes the weighted flow time of the schedule that~$A$ produces on the instance~$I$, and $\OPT(I)$ is the optimal weighted flow time of~$I$. By Yao's principle~\cite{Yao77}, the second statement implies the first, and the term~$\gamma$ rules out additive constants. The lower bound holds even when the algorithm knows upper bounds on~$W$, $P$, and~$D$, as well as the number of jobs.
-
+Here $F_A(I)$ denotes the weighted flow time of the schedule that~$A$ produces on the instance~$I$, and $\OPT(I)$ is the optimal weighted flow time of~$I$. By Yao's principle~\cite{Yao77}, the second statement implies the first. The lower bound holds even when the algorithm knows upper bounds on~$W$, $P$, and~$D$, as well as the number of jobs.
+%
 Thus, even with randomization, the competitive ratio must grow with the parameters of the instance. Our construction gives an explicit dependence on~$W$, $P$, $D$, and the number~$n$ of jobs.
 
 \begin{theorem}\label{thm:quant}
@@ -255,7 +255,7 @@ In particular, for $W=P=D=n$, the competitive ratio on instances with at most~$n
 Finally, we show that our lower bound also holds with high probability, with the same dependence on the instance parameters.
 
 \begin{theorem}\label{thm:probability}
-There is an absolute constant $C\ge1$ such that, for every $\rho\ge1$, $\gamma\ge0$, and randomized online algorithm~$\cA$, there is an instance~$I$ on which~$\cA$ incurs cost at least $\rho\cdot\OPT(I)+\gamma$ with probability at least $1-2^{-\rho}$. This instance has weight ratio at most $2^{2^{C\rho}}$, and its size ratio, density ratio, and number of jobs are at most $2^{2^{2^{C\rho}}}$.
+There is an absolute constant $C\ge1$ such that, for every $\rho\ge1$ and randomized online algorithm~$\cA$, there is a nonempty instance~$I$ on which~$\cA$ incurs cost at least $\rho\cdot\OPT(I)$ with probability at least $1-2^{-\rho}$. This instance has weight ratio at most $2^{2^{C\rho}}$, and its size ratio, density ratio, and number of jobs are at most $2^{2^{2^{C\rho}}}$.
 \end{theorem}
 
 %The dependence on~$W$ and~$P$ is exponentially weaker than in the deterministic lower bound of Bansal and Chan: to reach the lower bound~$\rho$, our construction proceeds in steps that each improve the bound only by a factor of $1+2^{-\Theta(\rho)}$. Whether randomized algorithms can beat the deterministic lower bound remains open (\cref{sec:conclusion}).
@@ -319,7 +319,7 @@ A \emph{randomized online algorithm}~$\cA$ is a probability distribution over de
 
 
 \begin{lemma}[Yao's principle]\label{lem:yao}
-Let $\cD$ be a probability distribution over finitely many instances, and let $\rho>0$ and $\gamma\in\RR$ be such that every deterministic online algorithm~$A$ satisfies $\E_{I\sim\cD}[F_A(I)]\ge \rho\cdot\E_{I\sim\cD}[\OPT(I)]+\gamma$. Then for every randomized online algorithm~$\cA$, there is an instance~$I$ in the support of~$\cD$ with $\E_{A\sim\cA}[F_A(I)]\ge \rho\cdot\OPT(I)+\gamma$.
+Let $\cD$ be a probability distribution over finitely many instances, and let $\rho>0$ be such that every deterministic online algorithm~$A$ satisfies $\E_{I\sim\cD}[F_A(I)]\ge \rho\cdot\E_{I\sim\cD}[\OPT(I)]$. Then for every randomized online algorithm~$\cA$, there is an instance~$I$ in the support of~$\cD$ with $\E_{A\sim\cA}[F_A(I)]\ge \rho\cdot\OPT(I)$.
 \end{lemma}
 
 
@@ -392,13 +392,13 @@ For every $\rho\ge1$, there is a $(2\rho,M)$-hard terminal distribution with $M=
 \end{theorem}
 
 \begin{proof}[Proof of \cref{thm:main}]
-Let $\rho\ge1$ and $\gamma\ge0$, and take a $(2\rho,M)$-hard terminal distribution~$\cD$ from~\cref{thm:hard}. Since its support is finite, there is a constant~$B$ such that $w(I)(T+p(I))\le B$ throughout the support. Apply~\cref{lem:flooding} with the same length~$L$ to every terminal instance, where $L$ is a positive multiple of $1/(2M)$ and $L\ge2B+2\gamma/\rho$. For the resulting distribution~$\hat\cD$, hardness and the two bounds of the lemma give
+Let $\rho\ge1$ and $\Gamma\ge0$, and take a $(2\rho,M)$-hard terminal distribution~$\cD$ from~\cref{thm:hard}. Since its support is finite, there is a constant~$B$ such that $w(I)(T+p(I))\le B$ throughout the support. Apply~\cref{lem:flooding} with the same length~$L$ to every terminal instance, where $L$ is a positive multiple of $1/(2M)$ and $L\ge2B+4(\Gamma+1)/\rho$. For the resulting distribution~$\hat\cD$ over finitely many nonempty instances, hardness and the two bounds of the lemma give
 \begin{equation*}
   \E[F_A(\hat I)]-\rho\,\E[\OPT(\hat I)]
   \ge 2\rho L-\rho\bigl(\tfrac32L+B\bigr)
-  =\rho(L/2-B)\ge\gamma\,,
+  =\rho(L/2-B)\ge0
 \end{equation*}
-for every deterministic online algorithm~$A$. This proves the distributional statement. For a randomized algorithm~$\cA$ and any additive constant~$\Gamma\ge0$, \cref{lem:yao} applied to the distribution~$\hat\cD$ for $\gamma=\Gamma+1$ gives an instance~$\hat I$ with $\E_{A\sim\cA}[F_A(\hat I)]\ge \rho\,\OPT(\hat I)+\Gamma+1$. Since $\rho$ and~$\Gamma$ are arbitrary, no randomized online algorithm is $O(1)$-competitive.
+for every deterministic online algorithm~$A$. This proves the distributional statement. Every instance~$\hat I$ in the support contains $2ML$ stream jobs, each of weight~$1/2$ and flow time at least its size $1/(2M)$, so $\OPT(\hat I)\ge L/2\ge2(\Gamma+1)/\rho$. For a randomized algorithm~$\cA$, \cref{lem:yao} therefore gives an instance~$\hat I$ with $\E_{A\sim\cA}[F_A(\hat I)]\ge \rho\cdot\OPT(\hat I)\ge(\rho/2)\OPT(\hat I)+\Gamma+1$. Since $\rho$ and~$\Gamma$ are arbitrary, no randomized online algorithm is $O(1)$-competitive.
 \end{proof}
 
 \section{Constructing hard terminal distributions}\label{sec:construction}
@@ -686,16 +686,14 @@ By induction on~$q$, all instances in the support of~$\cD_q$ have the same numbe
 For an instance~$I$, let $W(I)=\max_{j\in I}w_j/\min_{j\in I}w_j$ and $P(I)=\max_{j\in I}p_j/\min_{j\in I}p_j$ be its weight and size ratios. Let $D(I)=\max_{j\in I}(w_j/p_j)/\min_{j\in I}(w_j/p_j)$ be its density ratio, and let~$|I|$ be its number of jobs. In this section, all logarithms are to base~$2$. Bounding these parameters in the construction of~\cref{sec:iteration} gives the following refinement of~\cref{thm:main}.
 
 \begin{theorem}\label{thm:quant-refined}
-There is an absolute constant $C\ge1$ such that for all $\rho\ge1$ and $\gamma\ge0$, there is a probability distribution~$\hat\cD$ over finitely many instances such that every instance~$\hat I$ in its support satisfies
+There is an absolute constant $C\ge1$ such that for every $\rho\ge1$, there is a probability distribution~$\hat\cD$ over finitely many nonempty instances such that every instance~$\hat I$ in its support satisfies
 \begin{equation*}
   W(\hat I)\le2^{2^{C\rho}}\qquad \text{and} \qquad \max\{P(\hat I),D(\hat I),|\hat I|\}\le2^{2^{2^{C\rho}}}\,,
 \end{equation*}
-and every deterministic online algorithm~$A$ satisfies $\E_{\hat I\sim\hat\cD}[F_A(\hat I)]\ge \rho\cdot\E_{\hat I\sim\hat\cD}[\OPT(\hat I)]+\gamma$.
+and every deterministic online algorithm~$A$ satisfies $\E_{\hat I\sim\hat\cD}[F_A(\hat I)]\ge \rho\cdot\E_{\hat I\sim\hat\cD}[\OPT(\hat I)]$.
 \end{theorem}
 
 \begin{proof}
-It suffices to prove the claim for $\gamma=1$. Multiplying all weights by $\lambda=\max\{1,\gamma\}$ preserves $W$, $P$, $D$, and the number of jobs, and scales both costs by~$\lambda$. For each algorithm~$A$ on the scaled instances, apply the guarantee for $\gamma=1$ to $A'(I)=A(\lambda I)$, as in the weight-scaling argument of~\cref{obs:basic}\ref{obs:scaling}.
-
 Let $M$, $k$, $\eta$, $m$, $N$, and $\cD_0,\dots,\cD_N$ be as in~\cref{sec:iteration}. We obtain~$\hat\cD$ by flooding~$\cD_N$ (\cref{lem:flooding}) with a common stream length~$L$ chosen below. The stream jobs have weight~$1/2$ and size $1/(2M)$.
 
 \emph{Weights.} All weights in~$\cD_q$ lie in $[(2m)^{-q},1]$. Indeed, the initial weight is~$1$. Each round adds a heavy job of weight~$2M$ and divides all weights by~$\beta m\in[m,2m]$, where $\beta\in[1,2]$ is the normalization of amplification. The claim follows by induction, since $m\ge2M$. The stream weight~$1/2$ lies in the same interval for $q=N\ge1$, so $W(\hat I)\le(2m)^N$.
@@ -711,7 +709,7 @@ All jobs in~$\cD_q$ also have size at least~$2$: the initial job has size~$2$, c
 \begin{equation*}
   \E[F_A(\hat I)]-\rho\,\E[\OPT(\hat I)]
   \ge2\rho L-\rho\bigl(\tfrac32L+2H_N^2\bigr)
-  =\rho(L/2-2H_N^2)=\rho\ge1
+  =\rho(L/2-2H_N^2)=\rho>0
 \end{equation*}
 for every deterministic online algorithm~$A$, as required. The stream adds $2ML=2M(4H_N^2+2)$ jobs. As $M\ge4$ and $H_N\ge2$, we obtain $|\hat I|\le H_N/2+2M(4H_N^2+2)\le(2MH_N)^2$.
 
@@ -731,24 +729,24 @@ Together with $P(\hat I)\le2MH_N$, $D(\hat I)\le2MH_N(2m)^N$, and $|\hat I|\le(2
 \begin{proof}[Proof of \cref{thm:quant}]
 Let $W,P,D,n\ge16$, and let~$C$ be the constant of~\cref{thm:quant-refined}. Fix a randomized online algorithm~$\cA$ and set $\rho=\min\{\log\log W,\log\log\log\min\{P,D,n\}\}/C$. This is positive because $W,P,D,n\ge16$. If $\rho<1$, there is nothing to show, since no algorithm has competitive ratio less than~$1$.
 
-Otherwise, let $\Gamma\ge0$. By~\cref{thm:quant-refined} with $\gamma=\Gamma+1$ and~\cref{lem:yao}, there is an instance~$\hat I$ satisfying
+Otherwise, let $\Gamma\ge0$, and let~$\hat\cD$ be the distribution of~\cref{thm:quant-refined}. Its support consists of finitely many nonempty instances, so there is $c>0$ with $\OPT(\hat I)\ge c$ throughout the support. Multiplying all weights by $\lambda=2(\Gamma+1)/(\rho c)$ preserves $W$, $P$, $D$, and the number of jobs, and it scales both costs by~$\lambda$. Hence the distribution of~$\lambda\hat I$ for $\hat I\sim\hat\cD$ also satisfies the guarantee of~\cref{thm:quant-refined}: for a deterministic online algorithm~$A$, apply the guarantee to $A'(I)=A(\lambda I)$, as in the weight-scaling argument of~\cref{obs:basic}\ref{obs:scaling}. By~\cref{lem:yao}, there is an instance~$I$ in the support of this distribution with
 \begin{equation*}
-  W(\hat I)\le2^{2^{C\rho}}\le W \qquad \text{and} \qquad
-  \max\{P(\hat I),D(\hat I),|\hat I|\}\le2^{2^{2^{C\rho}}}\le\min\{P,D,n\}
+  W(I)\le2^{2^{C\rho}}\le W \qquad \text{and} \qquad
+  \max\{P(I),D(I),|I|\}\le2^{2^{2^{C\rho}}}\le\min\{P,D,n\}
 \end{equation*}
-and $\E_{A\sim\cA}[F_A(\hat I)]\ge \rho\cdot\OPT(\hat I)+\Gamma+1$. Hence~$\cA$ is not $\rho$-competitive on this class of instances, proving the claimed lower bound.
+and $\E_{A\sim\cA}[F_A(I)]\ge \rho\cdot\OPT(I)\ge(\rho/2)\OPT(I)+\Gamma+1$, where the last step uses $\OPT(I)\ge\lambda c=2(\Gamma+1)/\rho$. Hence~$\cA$ is not $\rho/2$-competitive on this class of instances, proving the claimed lower bound.
 \end{proof}
 
 \subsection{A high-probability lower bound}\label{sec:probability}
 
-The last averaging step also yields the high-probability lower bound of~\cref{thm:probability}. In the notation of this section, there is an absolute constant $C\ge1$ such that, for every $\rho\ge1$, $\gamma\ge0$, and randomized online algorithm~$\cA$, there is an instance~$I$ with
+The last averaging step also yields the high-probability lower bound of~\cref{thm:probability}. In the notation of this section, there is an absolute constant $C\ge1$ such that, for every $\rho\ge1$ and randomized online algorithm~$\cA$, there is a nonempty instance~$I$ with
 \begin{equation*}
   W(I)\le2^{2^{C\rho}}\qquad \text{and} \qquad
   \max\{P(I),D(I),|I|\}\le2^{2^{2^{C\rho}}}
 \end{equation*}
 and
 \begin{equation*}
-  \Pr_{A\sim\cA}\bigl[F_A(I)\ge \rho\,\OPT(I)+\gamma\bigr]\ge1-2^{-\rho}\,.
+  \Pr_{A\sim\cA}\bigl[F_A(I)\ge \rho\,\OPT(I)\bigr]\ge1-2^{-\rho}\,.
 \end{equation*}
 
 \begin{proof}[Proof of \cref{thm:probability}]
@@ -780,14 +778,14 @@ Flood~$\cD_N$ with the stream length $L=4H_N^2+2$ from the proof of~\cref{thm:qu
 \begin{equation*}
   F_A(\hat I)-\rho\,\OPT(\hat I)
   \ge3\rho L-\rho\bigl(\tfrac52L+2H_N^2\bigr)
-  =\rho(L/2-2H_N^2)=\rho\ge1\,.
+  =\rho(L/2-2H_N^2)=\rho>0\,.
 \end{equation*}
-Thus the resulting finite distribution~$\hat\cD$ satisfies $\Pr_{\hat I\sim\hat\cD}[F_A(\hat I)\ge \rho\,\OPT(\hat I)+1]\ge1-2^{-\rho}$ for every deterministic~$A$. The parameter bounds follow from the proof of~\cref{thm:quant-refined}, with an absolute constant enlarged to account for the use of~$2\rho$. Scaling all weights as in its proof replaces the additive term~$1$ by any~$\gamma\ge0$, preserving the parameter bounds and the probability guarantee for every deterministic algorithm.
+Thus the resulting finite distribution~$\hat\cD$ over nonempty instances satisfies $\Pr_{\hat I\sim\hat\cD}[F_A(\hat I)\ge \rho\,\OPT(\hat I)]\ge1-2^{-\rho}$ for every deterministic~$A$. The parameter bounds follow from the proof of~\cref{thm:quant-refined}, with an absolute constant enlarged to account for the use of~$2\rho$.
 
 Finally, average over $A\sim\cA$. Since~$\hat\cD$ has finite support, we may exchange the expectations over the algorithm and the instance, giving
 \begin{equation*}
   \E_{\hat I\sim\hat\cD}
-  \left[\Pr_{A\sim\cA}\bigl[F_A(\hat I)\ge \rho\,\OPT(\hat I)+\gamma\bigr]\right]
+  \left[\Pr_{A\sim\cA}\bigl[F_A(\hat I)\ge \rho\,\OPT(\hat I)\bigr]\right]
   \ge1-2^{-\rho}\,.
 \end{equation*}
 Hence some instance in the support of~$\hat\cD$ satisfies the claim.
