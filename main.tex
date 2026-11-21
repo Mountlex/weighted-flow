@@ -189,7 +189,7 @@
 
 \title{Weighted Flow Time Does Not Admit\\ $O(1)$-Competitive Randomized Algorithms}
 
-\author{Alexander Lindermayr\thanks{TU Berlin, Germany (\texttt{alexander.lindermayr@tu-berlin.de}).}}
+\author{Alexander Lindermayr\thanks{Institut für Mathematik, Technische Universität Berlin, Germany (\texttt{alexander.lindermayr@tu-berlin.de}).}}
 \date{}
 
 \begin{document}
@@ -197,18 +197,18 @@
 \maketitle
 
 \begin{abstract}
-We study online preemptive scheduling of jobs with release times, sizes, and weights on a single machine, with the objective of minimizing weighted flow time. Bansal and Chan (SODA~2009) showed that no deterministic online algorithm is $O(1)$-competitive for this problem. We show that no randomized online algorithm is $O(1)$-competitive against an oblivious adversary, which settles the remaining case of the long-standing question whether online weighted flow time admits an $O(1)$-competitive algorithm. Quantitatively, we prove that every randomized algorithm has a competitive ratio in $\Omega(\min\{\log\log W,\log\log\log\min\{P,D,n\}\})$, where $n$ is the number of jobs and $W$, $P$, and~$D$ are the ratios of the largest to the smallest job weight, size, and density (weight divided by size), respectively. We also obtain a high-probability lower bound with the same asymptotic dependence on the instance parameters. Both lower bounds hold even if the algorithm knows in advance the size and weight of every job in release order and, for any fixed~$\eps>0$, every interarrival time up to a factor of $1+\eps$: the interarrival times are independent, and each is drawn from a known distribution on an interval $[g,(1+\eps)g]$.
+We study online preemptive scheduling of jobs with release times, sizes, and weights on a single machine, with the objective of minimizing weighted flow time. Bansal and Chan (SODA~2009) showed that no deterministic online algorithm is $O(1)$-competitive for this problem. We show that no randomized online algorithm is $O(1)$-competitive against an oblivious adversary, which settles the remaining case of the long-standing question whether online weighted flow time admits an $O(1)$-competitive algorithm. Quantitatively, we prove that every randomized algorithm has a competitive ratio in $\Omega(\min\{\log\log W,\log\log\log\min\{P,D,n\}\})$, where $n$ is the number of jobs and $W$, $P$, and~$D$ are the ratios of the largest to the smallest job weight, size, and density (weight divided by size), respectively. We also obtain a high-probability lower bound with the same asymptotic dependence on the instance parameters. Both lower bounds hold even if the algorithm knows in advance the size and weight of every job in release order and, for any fixed~$\eps>0$, every interarrival time up to a factor of $1+\eps$. 
 \end{abstract}
 
 \section{Introduction}
 
-Total weighted flow time is a classical objective in online scheduling: jobs arrive over time, and the goal is to minimize the total time they spend in the system, weighted by their importance~\cite{PruhsST04}. We study this problem on a single machine. Each job~$j$ has a release time~$r_j$, a size~$p_j$, and a weight~$w_j$, which become known at time~$r_j$. The machine processes at most one job at a time, and a job may be preempted and resumed later. If job~$j$ completes at time~$C_j$, its flow time is $C_j-r_j$, and the objective is to minimize $\sum_j w_j(C_j-r_j)$. At each time, an online algorithm decides which job to process, without knowledge of future jobs. It is \emph{$\rho$-competitive} if, on every instance, its (expected) cost is at most $\rho$ times the optimal cost.
+Total weighted flow time is a classical objective in online scheduling. Jobs arrive over time, and the goal is to minimize the total time they spend in the system, weighted by their importance~\cite{PruhsST04}. We study this problem on a single machine. Each job~$j$ has a release time~$r_j$, a size~$p_j$, and a weight~$w_j$, which become known at time~$r_j$. The machine processes at most one job at a time, and a job may be preempted and resumed later. If job~$j$ completes at time~$C_j$, its flow time is $C_j-r_j$, and the objective is to minimize $\sum_j w_j(C_j-r_j)$. At each time, an online algorithm decides which job to process, without knowledge of future jobs. It is \emph{$\rho$-competitive} if, on every instance, its (expected) cost is at most $\rho$ times the optimal cost.
 
 With unit weights, always processing the job with the shortest remaining processing time (SRPT) is optimal, even online~\cite{Schrage68}. Weights make the problem much harder. Even the offline problem is strongly NP-hard~\cite{LabetoulleLLR84}, and a polynomial-time approximation scheme~\cite{ArmbrusterRW26} was found only after a long line of work~\cite{ChekuriK02,BansalP14,BatraGK23,FeigeKL19,RohwedderW21}.
 
 The best known upper bounds on the competitive ratio for online algorithms for this problem grow logarithmically with the parameters of the instance. Let $W$, $P$, and~$D$ be the ratios of the largest to the smallest job weight, size, and density $w_j/p_j$, respectively. The first nontrivial algorithm, by Chekuri, Khanna, and Zhu~\cite{ChekuriKZ01}, is $O(\log^2P)$-competitive and needs to know~$P$ in advance. Bansal and Dhamdhere~\cite{BansalD07} gave an $O(\log W)$-competitive algorithm. Azar and Touitou~\cite{AzarT18} gave $O(\log P)$- and $O(\log D)$-competitive algorithms and combined them with the algorithm of Bansal and Dhamdhere into an $O(\log\min\{P,D,W\})$-competitive deterministic algorithm. A constant competitive ratio becomes possible with \emph{speed augmentation}~\cite{KalyanasundaramP00,PhillipsSTW02}, where the algorithm runs on a slightly faster machine than the one used by the optimal schedule. On a machine of speed~$1+\eps$, the Highest Density First rule, which always processes a released and uncompleted job of largest density, is $O(1/\eps)$-competitive for every constant $\eps>0$~\cite{BecchettiLMP06}.
 
-Pruhs, Sgall, and Torng~\cite{PruhsST04} called the existence of an $O(1)$-competitive algorithm perhaps the most intriguing open question about flow time in online scheduling. It was widely believed that such an algorithm exists, but Bansal and Chan~\cite{BansalC09} showed that every deterministic online algorithm has a competitive ratio of
+Pruhs, Sgall, and Torng~\cite{PruhsST04} called the existence of an $O(1)$-competitive algorithm perhaps the most intriguing open question about flow time in online scheduling. As Bansal and Chan~\cite{BansalC09} note, it was widely believed that such an algorithm exists. They showed, however, that every deterministic online algorithm has a competitive ratio of
 \begin{equation*}
   \Omega\biggl(\min\biggl\{\sqrt{\frac{\log W}{\log\log W}},\,\sqrt{\frac{\log\log P}{\log\log\log P}}\biggr\}\biggr)\,.
 \end{equation*}
@@ -222,7 +222,7 @@ For weighted flow time on a single machine, the best lower bound for randomized 
 We answer this question negatively.
 
 \begin{theorem}\label{thm:main}
-No randomized online algorithm for minimizing weighted flow time on a single machine is $O(1)$-competitive against an oblivious adversary. More precisely, for every $\rho\ge1$, there is a probability distribution~$\cD$ over finitely many nonempty instances such that every deterministic online algorithm~$A$ satisfies $\E_{I\sim\cD}\bigl[F_A(I)\bigr]\ge \rho\cdot\E_{I\sim\cD}\bigl[\OPT(I)\bigr]$.
+No randomized online algorithm for minimizing weighted flow time on a single machine is $O(1)$-competitive against an oblivious adversary. More precisely, for every $\rho\ge1$, there is a probability distribution~$\cD$ over finitely many instances such that every deterministic online algorithm~$A$ satisfies $\E_{I\sim\cD}\bigl[F_A(I)\bigr]\ge \rho\cdot\E_{I\sim\cD}\bigl[\OPT(I)\bigr]$.
 \end{theorem}
 
 Here $F_A(I)$ denotes the weighted flow time of the schedule that~$A$ produces on the instance~$I$, and $\OPT(I)$ is the optimal weighted flow time of~$I$. By Yao's principle~\cite{Yao77}, the second statement implies the first.
@@ -242,7 +242,7 @@ In particular, for $W=P=D=n$, the competitive ratio on instances with at most~$n
 Finally, we show that our lower bound also holds with high probability, with the same dependence on the instance parameters.
 
 \begin{theorem}\label{thm:probability}
-There is an absolute constant $C\ge1$ such that, for every $\rho\ge1$ and randomized online algorithm~$\cA$, there is a nonempty instance~$I$ on which~$\cA$ incurs cost at least $\rho\cdot\OPT(I)$ with probability at least $1-2^{-\rho}$. This instance has weight ratio at most $2^{2^{C\rho}}$, and its size ratio, density ratio, and number of jobs are at most $2^{2^{2^{C\rho}}}$.
+There is an absolute constant $C\ge1$ such that, for every $\rho\ge1$ and randomized online algorithm~$\cA$, there is an instance~$I$ on which~$\cA$ incurs cost at least $\rho\cdot\OPT(I)$ with probability at least $1-2^{-\rho}$. This instance has weight ratio at most $2^{2^{C\rho}}$, and its size ratio, density ratio, and number of jobs are at most $2^{2^{2^{C\rho}}}$.
 \end{theorem}
 
 None of these lower bounds relies on uncertainty about the jobs themselves. In our hard distributions, the sizes and weights of all jobs are fixed, and only the times between consecutive releases are random, each within a factor of $1+\eps$.
@@ -252,7 +252,7 @@ For every $\eps>0$, there is a constant $C\ge1$ such that the following holds fo
 \begin{equation*}
   \E\bigl[F_A(I)\bigr]\ge\rho\cdot\E\bigl[\OPT(I)\bigr]
   \qquad\text{and}\qquad
-  \Pr\bigl[F_A(I)\ge\rho\,\OPT(I)\bigr]\ge1-2^{-\rho}\,.
+  \Pr\bigl[F_A(I)\ge\rho\cdot \OPT(I)\bigr]\ge1-2^{-\rho}\,.
 \end{equation*}
 The weight ratio of~$I$ is at most $2^{2^{C\rho}}$, and its size ratio, density ratio, and number of jobs are at most $2^{2^{2^{C\rho}}}$.
 \end{theorem}
@@ -264,13 +264,13 @@ The algorithm~$A$ may depend on~$n$, on the sizes and weights, and on the distri
 By Yao's principle, it suffices to construct, for every~$\rho$, a distribution over instances on which every deterministic algorithm has expected cost at least $\rho$ times the expected optimal cost. Such a distribution cannot react to the algorithm, so it cannot choose later jobs based on which earlier jobs remain unfinished. Instead, our distributions hide the time at which the algorithm's \emph{active weight}, the total weight of released but uncompleted jobs, is compared with the minimum possible active weight.
 
 \paragraph{Active weight at a hidden time.}
-Weighted flow time is the integral of the active weight over time. An algorithm whose active weight is always at most $c$ times the minimum possible active weight at that time is therefore $c$-competitive. Conversely, Becchetti, Leonardi, Marchetti-Spaccamela, and Pruhs~\cite{BecchettiLMP06} showed that every $c$-competitive deterministic online algorithm has this property, using a stream of short, dense jobs. We use this converse direction: we create a large expected gap in active weight at a hidden time, then use such a stream to make the gap persist long enough to dominate the weighted flow time.
+Weighted flow time is the integral of the active weight over time. An algorithm whose active weight is always at most $c$ times the minimum possible active weight at that time is therefore $c$-competitive. Conversely, Becchetti, Leonardi, Marchetti-Spaccamela, and Pruhs~\cite{BecchettiLMP06} showed that every $c$-competitive deterministic online algorithm has this property, using a stream of short, dense jobs. We use this converse direction. We create a large expected gap in active weight at a hidden time, then use such a stream to make the gap persist long enough to dominate the weighted flow time.
 
 \paragraph{Hard terminal distributions.}
 Our building blocks are \emph{terminal distributions} over pairs $(I,T)$, where~$T$ is later than all release times in~$I$. The algorithm sees the jobs of~$I$ as they arrive, but is not given~$T$. Let $U^*(I,T)$ be the minimum active weight at~$T$ among all feasible schedules. Online, we count only \emph{robust} jobs, whose remaining size at~$T$ is at least~$1$. These jobs form the \emph{robust backlog} and cannot finish before~$T+1$. We cap their total weight at~$M$. A terminal distribution is \emph{$(c,M)$-hard} if $\E[U^*(I,T)]\le1$, whereas every deterministic algorithm has expected capped robust backlog at least~$c$ (\cref{def:hard}). We call~$c$ the \emph{gap} and~$M$ the \emph{cap}.
 
 \paragraph{Flooding.}
-A $(2\rho,M)$-hard terminal distribution yields the lower bound~$\rho$ by \emph{flooding} (\cref{lem:flooding}). Starting at~$T$, a long stream of jobs of weight~$1/2$ and density~$M$ keeps the machine busy. Until the algorithm has spent one unit of processing on old jobs, its robust backlog remains unfinished; afterwards, the delayed stream jobs have total weight at least~$M$. Hence its active weight never drops below its capped robust backlog at~$T$. An offline schedule can instead leave weight $U^*(I,T)$ unfinished and process each stream job immediately, keeping active weight at $U^*(I,T)+1/2$. A sufficiently long stream makes this gap dominate the costs before and after it.
+A $(2\rho,M)$-hard terminal distribution yields the lower bound~$\rho$ by \emph{flooding} (\cref{lem:flooding}). Starting at~$T$, a long stream of jobs of weight~$1/2$ and density~$M$ keeps the machine busy. Until the algorithm has spent one unit of processing on old jobs, its robust backlog remains unfinished. Afterwards, the delayed stream jobs have total weight at least~$M$. Hence its active weight never drops below its capped robust backlog at~$T$. An offline schedule can instead leave weight $U^*(I,T)$ unfinished and process each stream job immediately, keeping active weight at $U^*(I,T)+1/2$. A sufficiently long stream makes this gap dominate the costs before and after it.
 
 It thus suffices to construct $(c,M)$-hard terminal distributions with arbitrarily large gap~$c$. We start from the trivial $(1,M)$-hard distribution that consists of a single job of size~$2$ and weight~$1$, released at time~$0$, with terminal time~$1$, and we alternate two operations, amplification and averaging. Both build on the following way of combining copies of a hard distribution.
 
@@ -280,9 +280,9 @@ We concatenate independent samples of a hard distribution, starting copy~$i$ at 
 \paragraph{Amplification.}
 Amplification takes $k=2M+1$ copies of a $(c,M)$-hard distribution and, immediately after them, releases a heavy job~$J$ of weight~$2M$ whose size~$V$ is at least the total size of all copies. The new terminal time is one of $k$ checkpoints $h_k<h_{k-1}<\dots<h_1$ after the release of~$J$, where checkpoint~$h_i$ leaves enough time to complete~$J$ and copies $i+1,\dots,k$ (\cref{fig:amplification}). We choose the checkpoint~$h_K$ at random, with $\Pr[K\ge i]=2^{1-i}$ for $i=1,\dots,k$. By terminal time~$h_i$, an offline schedule can complete~$J$ and copies $i+1,\dots,k$, leaving expected weight at most~$i$ unfinished. By the earliest checkpoint~$h_k$, it can instead complete all copies and leave only~$J$, of weight $k-1$, unfinished. Hence the expected minimum active weight at the terminal time is at most $\E[K]-\Pr[K=k]$.
 
-At checkpoint~$h_i$, either~$J$ is still robust, or every job in copy~$i$'s robust backlog is. In the latter case, this backlog contributes at~$h_i$ and at all earlier checkpoints. In the former case, $J$ compensates for the possibly missing contribution of copy~$i$: its weight is twice the cap of a copy, which suffices under the geometric checkpoint probabilities. Charging each copy separately gives expected capped robust backlog at least $c\,\E[K]$. The offline schedule saves $\Pr[K=k]$ relative to~$\E[K]$, so normalizing the weights improves the gap by at least a factor of $1+\eta$, where $\eta=2^{-k}$~(\cref{lem:amplification}).
+Online, the heavy job splits the checkpoints at a single index~$b$, in the sense that it is still robust at~$h_i$ exactly if $i>b$. For $j\le b$, the algorithm has almost finished~$J$ by~$h_j$, which leaves too little time for the robust backlog of copy~$j$. This backlog survives at~$h_j$ and at all earlier checkpoints. The robust backlog at~$h_i$ therefore contains those of copies $1,\dots,\min\{i,b\}$, and also~$J$ if $i>b$. The weight of~$J$ is twice the cap of a copy, and under the geometric checkpoint probabilities it makes up in expectation for the missing copies $b+1,\dots,K$. Hence the expected capped robust backlog is at least $c\cdot \E[K]$ for every~$b$. The offline schedule saves $\Pr[K=k]$ relative to~$\E[K]$, so normalizing the weights improves the gap by at least a factor of $1+\eta$, where $\eta=2^{-k}$~(\cref{lem:amplification}).
 
-For example, start with the $(1,1)$-hard single-job distribution, the case shown in~\cref{fig:amplification}. Then $k=3$, and $h_1,h_2,h_3$ are chosen with probabilities $1/2,1/4,1/4$, respectively. At the earliest checkpoint~$h_3$, an offline schedule can finish all three copies and leave only~$J$, of weight~$2$. The minimum active weight at $h_1,h_2,h_3$ is thus at most $1$, $2$, and~$2$, respectively, and at most~$3/2$ in expectation. Online, copy~$i$ contributes an expected charge of at least $\Pr[K\ge i]$, so the robust backlog capped at~$4$ has expectation at least $1+1/2+1/4=7/4$. Dividing all weights by~$3/2$ gives a gap of at least $(7/4)/(3/2)=7/6$, compared with the general guarantee of~$9/8$.
+For example, start with the $(1,1)$-hard single-job distribution, the case shown in~\cref{fig:amplification}. Then $k=3$, and $h_1,h_2,h_3$ are chosen with probabilities $1/2,1/4,1/4$, respectively. At the earliest checkpoint~$h_3$, an offline schedule can finish all three copies and leave only~$J$, of weight~$2$. The minimum active weight at $h_1,h_2,h_3$ is thus at most $1$, $2$, and~$2$, respectively, and at most~$3/2$ in expectation. Online, the robust backlog capped at~$4$ has expectation at least $\E[K]=1+1/2+1/4=7/4$. Dividing all weights by~$3/2$ gives a gap of at least $(7/4)/(3/2)=7/6$, compared with the general guarantee of~$9/8$.
 
 \paragraph{Averaging.}
 Amplification improves the gap but increases the cap, making the next improvement exponentially smaller. Averaging brings the cap back down. Given a $(c,M)$-hard distribution, it concatenates~$m$ copies and divides all weights by~$m$. Their capped robust backlogs $X_i\in[0,M]$ need not be independent, but have conditional expectations at least~$c$. A second-moment bound shows that their average, capped at~$c$, has expectation at least $c-M/\sqrt m$ (\cref{lem:averaging}). Thus we can reduce the cap to~$c$ while losing arbitrarily little from the gap.
@@ -291,7 +291,7 @@ Amplification improves the gap but increases the cap, making the next improvemen
 We fix the cap $M=\lceil4\rho\rceil$ and alternate amplification and averaging. Amplification increases the gap by at least~$\eta$, and averaging loses at most~$\eta/2$ while returning the cap to at most~$M$. Each round therefore adds at least~$\eta/2$ to the gap. After $2^{O(\rho)}$ rounds it reaches~$2\rho$~(\cref{thm:hard}). Each round combines $2^{O(\rho)}$ copies, giving the bounds on~$W$, $P$, $D$, and~$n$ in~\cref{thm:quant}.
 
 \paragraph{Comparison with the deterministic lower bound.}
-Our construction builds on the gap amplification technique of Bansal and Chan~\cite{BansalC09}. Several of our ingredients appear there in adaptive form: they measure active weight using jobs with large remaining size, run subinstances at decreasing scales, release a final heavy job, and convert active weight into flow time with a stream of short, dense jobs. Their adversary, however, observes the algorithm: each subinstance ends when the algorithm has fallen behind, and the continuation after the heavy job depends on how the algorithm processes it. Our hidden random terminal time makes amplification oblivious. The conditional analysis of copies (\cref{lem:copies}) handles algorithms that adapt to earlier copies, and the cap and averaging make amplification repeatable, although its guarantee holds only in expectation.
+Our construction builds on the gap amplification technique of Bansal and Chan~\cite{BansalC09}. Several of our ingredients appear there in adaptive form. Bansal and Chan measure active weight using jobs with large remaining size, run subinstances at decreasing scales, release a final heavy job, and convert active weight into flow time with a stream of short, dense jobs. Their adversary, however, observes the algorithm. Each subinstance ends when the algorithm has fallen behind, and the continuation after the heavy job depends on how the algorithm processes it. Our hidden random terminal time makes amplification oblivious. The conditional analysis of copies (\cref{lem:copies}) handles algorithms that adapt to earlier copies, and the cap and averaging make amplification repeatable, although its guarantee holds only in expectation.
 
 \subsection{Further related work}
 
@@ -299,22 +299,22 @@ Without weights, SRPT is $O(\log\min\{P,n/m\})$-competitive on $m$ identical mac
 
 Nonclairvoyant algorithms also achieve constant competitive ratios for weighted flow time with speed augmentation, both on a single machine~\cite{BansalD07} and on unrelated machines~\cite{ImKMP14}. Im, Kulkarni, and Munagala~\cite{ImKM18} introduced the more general polytope scheduling problem, in which the processing rates of the jobs are subject to arbitrary packing constraints. For weighted flow time, the nonclairvoyant Proportional Fairness algorithm is $O(1)$-competitive with $O(1)$ speed on broad subclasses of this problem~\cite{ImKM18}, whereas on general instances, every nonclairvoyant algorithm needs polylogarithmic speed to be $O(1)$-competitive~\cite{ImKM18}. Recently, J\"ager, Lindermayr, and Zondervan~\cite{JagerLZ26} showed that, as on a single machine, Proportional Fairness is $O(1/\eps)$-competitive for weighted flow time with speed $2+\eps$ on the class of support-submodular polytopes, which includes unrelated machines. 
 
-Between the clairvoyant and the nonclairvoyant setting, another line of work studies flow time when the algorithm knows only estimates of the job sizes~\cite{AzarLT21,AzarLT22,GuptaKPW26}. In the $\eps$-clairvoyant setting, the algorithm learns the size of a job once only an $\eps$-fraction of it remains; for unweighted flow time on a single machine, the best competitive ratio is then $\Theta(1/\eps)$, even for randomized algorithms~\cite{GuptaKLSY25}. \cite{GuptaKLSY26} combine both relaxations: if the algorithm receives a $\mu$-approximate estimate of the size of a job at some point before only an $\eps$-fraction of it remains, a variant of the multilevel feedback algorithm is $O(\mu/\eps)$-competitive, which is asymptotically optimal. For release times, \cref{thm:interarrival} shows that such approximate knowledge does not allow a constant competitive ratio for weighted flow time, even when all sizes and weights are known exactly.
+Between the clairvoyant and the nonclairvoyant setting, another line of work studies flow time when the algorithm knows only estimates of the job sizes~\cite{AzarLT21,AzarLT22,GuptaKPW26}. In the $\eps$-clairvoyant setting, the algorithm learns the size of a job once only an $\eps$-fraction of it remains. For unweighted flow time on a single machine, the best competitive ratio is then $\Theta(1/\eps)$, even for randomized algorithms~\cite{GuptaKLSY25}. \cite{GuptaKLSY26} combine both relaxations and show that if the algorithm receives a $\mu$-approximate estimate of the size of a job at some point before only an $\eps$-fraction of it remains, a variant of the multilevel feedback algorithm is $O(\mu/\eps)$-competitive, which is asymptotically optimal. For release times, \cref{thm:interarrival} shows that such approximate knowledge does not allow a constant competitive ratio for weighted flow time, even when all sizes and weights are known exactly.
 
 
 \section{Preliminaries}\label{sec:prelim}
 
 \paragraph{Instances and schedules.}
-An \emph{instance}~$I$ is a finite set of jobs. We identify each job~$j$ with the triple $(r_j,p_j,w_j)$ of its release time $r_j\ge0$, size $p_j>0$, and weight $w_j>0$, so an algorithm receives no information about a job beyond these parameters. For a set~$E$ of jobs, let $w(E)=\sum_{j\in E}w_j$ and $p(E)=\sum_{j\in E}p_j$. For~$\lambda>0$, let $I/\lambda$ and~$\lambda I$ be the instances obtained from~$I$ by dividing and multiplying all weights by~$\lambda$, respectively.
+An \emph{instance}~$I$ is a finite nonempty set of jobs. We identify each job~$j$ with the triple $(r_j,p_j,w_j)$ of its release time $r_j\ge0$, size $p_j>0$, and weight $w_j>0$, so an algorithm receives no information about a job beyond these parameters. For a set~$E$ of jobs, let $w(E)=\sum_{j\in E}w_j$ and $p(E)=\sum_{j\in E}p_j$. For~$\lambda>0$, let $I/\lambda$ and~$\lambda I$ be the instances obtained from~$I$ by dividing and multiplying all weights by~$\lambda$, respectively.
 
-A \emph{schedule} of~$I$ assigns to each job $j\in I$ a (measurable) rate function $x_j\colon[0,\infty)\to[0,1]$ such that $x_j(t)=0$ for $t<r_j$, $\sum_{j\in I}x_j(t)\le1$ for all~$t$, and $\int_0^\infty x_j(t)\dd t\le p_j$. A schedule may thus share the machine among several jobs. This gives an online algorithm more power, and it does not change the optimum: processing at each time an active job whose completion time in a given schedule is earliest, that is, the earliest-deadline-first rule with these completion times as deadlines, completes no job later. The \emph{remaining size} of~$j$ at time~$t$ is $p_j-\int_0^t x_j(t')\dd t'$. Job~$j$ \emph{completes} at the first time~$C_j$ at which its remaining size is zero ($C_j=\infty$ if there is no such time), and it is \emph{active} at time~$t$ if $r_j\le t<C_j$. Writing $J(t)$ for the set of jobs that are active at time~$t$ and $w(J(t))$ for the \emph{active weight}, the weighted flow time of the schedule is
+A \emph{schedule} of~$I$ assigns to each job $j\in I$ a (measurable) rate function $x_j\colon[0,\infty)\to[0,1]$ such that $x_j(t)=0$ for $t<r_j$, $\sum_{j\in I}x_j(t)\le1$ for all~$t$, and $\int_0^\infty x_j(t)\dd t\le p_j$. A schedule may thus share the machine among several jobs. This gives an online algorithm more power, and it does not change the optimum, because processing at each time an active job whose completion time in a given schedule is earliest, that is, the earliest-deadline-first rule with these completion times as deadlines, completes no job later. The \emph{remaining size} of~$j$ at time~$t$ is $p_j-\int_0^t x_j(t')\dd t'$. Job~$j$ \emph{completes} at the first time~$C_j$ at which its remaining size is zero ($C_j=\infty$ if there is no such time), and it is \emph{active} at time~$t$ if $r_j\le t<C_j$. Writing $J(t)$ for the set of jobs that are active at time~$t$ and $w(J(t))$ for the \emph{active weight}, the weighted flow time of the schedule is
 \begin{equation*}
   \sum_{j\in I}w_j(C_j-r_j)=\int_0^\infty w(J(t))\dd t\,,
 \end{equation*}
 and $\OPT(I)$ denotes the optimum weighted flow time for instance~$I$.
 
 \paragraph{Online algorithms.}
-A \emph{deterministic online algorithm}~$A$ maps every instance~$I$ to a schedule $A(I)$ of~$I$ subject to the following non-anticipation condition: for every $t\ge0$ and all instances $I$ and $I'$ that contain the same jobs with release times before~$t$, the schedules $A(I)$ and $A(I')$ assign the same rates to these jobs during $[0,t)$. In other words, the decisions of~$A$ before time~$t$ depend only on the jobs released before~$t$, including their sizes and weights. In particular, these jobs have the same remaining sizes at time~$t$ in $A(I)$ and in $A(I')$. We write $F_A(I)$ for the weighted flow time of $A(I)$. 
+A \emph{deterministic online algorithm}~$A$ maps every instance~$I$ to a schedule $A(I)$ of~$I$ subject to non-anticipation, which requires that for every $t\ge0$ and all instances $I$ and $I'$ that contain the same jobs with release times before~$t$, the schedules $A(I)$ and $A(I')$ assign the same rates to these jobs during $[0,t)$. In other words, the decisions of~$A$ before time~$t$ depend only on the jobs released before~$t$, including their sizes and weights. In particular, these jobs have the same remaining sizes at time~$t$ in $A(I)$ and in $A(I')$. We write $F_A(I)$ for the weighted flow time of $A(I)$. 
 
 A \emph{randomized online algorithm}~$\cA$ is a probability distribution over deterministic online algorithms such that $F_A(I)$ is a random variable for every instance~$I$ when $A\sim\cA$. It is \emph{$\rho$-competitive} (against an oblivious adversary) if there is a constant~$\Gamma$ such that $\E_{A\sim\cA}[F_A(I)]\le \rho\cdot\OPT(I)+\Gamma$ for every instance~$I$. We use the easy direction of Yao's principle.
 
@@ -372,7 +372,7 @@ The following lemma turns a gap in active weight at the terminal time into a gap
 \begin{lemma}[Flooding]\label{lem:flooding}
 Let $(I,T)$ be a terminal instance, let $M>0$, and let $L$ be a positive multiple of $d=1/(2M)$. Form~$\hat I$ by adding jobs of size~$d$ and weight~$1/2$ at times $T,T+d,\dots,T+L-d$. Then every deterministic online algorithm~$A$ satisfies
 \begin{align*}
-  F_A(\hat I)&\ge L\,\varphi_A^M(I,T)\,,\\
+  F_A(\hat I)&\ge L\cdot \varphi_A^M(I,T)\,,\\
   \OPT(\hat I)&\le L\bigl(U^*(I,T)+\tfrac12\bigr)+w(I)\bigl(T+p(I)\bigr)\,.
 \end{align*}
 \end{lemma}
@@ -383,7 +383,7 @@ Call the jobs of~$I$ \emph{old} and the added jobs \emph{stream jobs}.
 
 \emph{Online cost.} Fix~$A$. Since the stream starts at~$T$, non-anticipation implies that the robust backlog at~$T$ is the same in $A(I)$ and $A(\hat I)$. Write $\varphi=\varphi_A^M(I,T)$. For $0\le\theta<L$, let~$y$ be the processing that the old jobs receive during $[T,T+\theta)$. If $y<1$, every job in the robust backlog is still active at time~$T+\theta$, so the active weight at this time is at least~$\varphi$. If $y\ge1$, the stream jobs released by time~$T+\theta$ have total size $d(\lfloor\theta/d\rfloor+1)>\theta$ and receive at most $\theta-y$ processing. Their total remaining size therefore exceeds~$y$. More than $y/d$ stream jobs are active, with total weight greater than $y/(2d)=My\ge M\ge\varphi$. Thus the active weight stays at least~$\varphi$ throughout the stream. Integration gives $F_A(\hat I)\ge L\varphi$.
 
-\emph{Offline cost.} Until~$T$, follow a schedule that leaves weight $U^*(I,T)$ unfinished. Process every stream job immediately after its release, then finish the remaining old jobs. The old jobs contribute at most $w(I)T$ before~$T$, exactly $L\,U^*(I,T)$ during the stream, and at most $w(I)p(I)$ afterwards. The stream jobs contribute $L/2$. Adding these terms proves the bound.
+\emph{Offline cost.} Until~$T$, follow a schedule that leaves weight $U^*(I,T)$ unfinished. Process every stream job immediately after its release, then finish the remaining old jobs. The old jobs contribute at most $w(I)T$ before~$T$, exactly $L\cdot U^*(I,T)$ during the stream, and at most $w(I)p(I)$ afterwards. The stream jobs contribute $L/2$. Adding these terms proves the bound.
 \end{proof}
 
 The main technical result is the existence of hard terminal distributions with arbitrarily large gaps.
@@ -393,9 +393,9 @@ For every $\rho\ge1$, there is a $(2\rho,M)$-hard terminal distribution with $M=
 \end{theorem}
 
 \begin{proof}[Proof of \cref{thm:main}]
-Let $\rho\ge1$ and $\Gamma\ge0$, and take a $(2\rho,M)$-hard terminal distribution~$\cD$ from~\cref{thm:hard}. Since its support is finite, there is a constant~$B$ such that $w(I)(T+p(I))\le B$ throughout the support. Apply~\cref{lem:flooding} with the same length~$L$ to every terminal instance, where $L$ is a positive multiple of $1/(2M)$ and $L\ge2B+4(\Gamma+1)/\rho$. For the resulting distribution~$\hat\cD$ over finitely many nonempty instances, hardness and the two bounds of the lemma give
+Let $\rho\ge1$ and $\Gamma\ge0$, and take a $(2\rho,M)$-hard terminal distribution~$\cD$ from~\cref{thm:hard}. Since its support is finite, there is a constant~$B$ such that $w(I)(T+p(I))\le B$ throughout the support. Apply~\cref{lem:flooding} with the same length~$L$ to every terminal instance, where $L$ is a positive multiple of $1/(2M)$ and $L\ge2B+4(\Gamma+1)/\rho$. For the resulting distribution~$\hat\cD$ over finitely many instances, hardness and the two bounds of the lemma give
 \begin{equation*}
-  \E[F_A(\hat I)]-\rho\,\E[\OPT(\hat I)]
+  \E[F_A(\hat I)]-\rho\cdot \E[\OPT(\hat I)]
   \ge 2\rho L-\rho\bigl(\tfrac32L+B\bigr)
   =\rho(L/2-B)\ge0
 \end{equation*}
@@ -468,7 +468,7 @@ Thus copy~$i$ is~$I_i$ stretched in time and size by~$s_i$, started at~$u_{i-1}$
 \end{equation}
 where the first identity also holds for~$i=0$. In particular, $V=S_0$ will bound the duration and the total size of all copies.
 
-An online algorithm~$A$ that processes copy~$i$ has already seen copies $1,\dots,i-1$ and may adapt to them. Nevertheless, copy~$i$ is a fresh sample of~$\cD$, and copies $i+1,\dots,m$ are released at~$u_i$ or later. We measure the robust backlog of~$A$ in copy~$i$ at the scale~$s_i$: it consists of the jobs of copy~$i$ whose remaining size in~$A(\bar I)$ at time~$u_i$ is at least~$s_i$. After shrinking time and sizes by~$s_i$, these are the jobs with remaining size at least~$1$ at the terminal time~$T_i$, as in the definition of the robust backlog. The later copies are released during $[u_i,\tau)$, an interval of length at most~$S_i$, so a job receives at most~$S_i$ processing during this interval. Hence the robust backlog of copy~$i$ survives the later copies: its jobs are still active at~$\tau$, with remaining size at least $s_i-S_i=S_i+2$ (\cref{fig:copies}).
+An online algorithm~$A$ that processes copy~$i$ has already seen copies $1,\dots,i-1$ and may adapt to them. Nevertheless, copy~$i$ is a fresh sample of~$\cD$, and copies $i+1,\dots,m$ are released at~$u_i$ or later. We measure the robust backlog of~$A$ in copy~$i$ at the scale~$s_i$, so it consists of the jobs of copy~$i$ whose remaining size in~$A(\bar I)$ at time~$u_i$ is at least~$s_i$. After shrinking time and sizes by~$s_i$, these are the jobs with remaining size at least~$1$ at the terminal time~$T_i$, as in the definition of the robust backlog. The later copies are released during $[u_i,\tau)$, an interval of length at most~$S_i$, so a job receives at most~$S_i$ processing during this interval. Hence the robust backlog of copy~$i$ survives the later copies, that is, its jobs are still active at~$\tau$, with remaining size at least $s_i-S_i=S_i+2$ (\cref{fig:copies}).
 
 
 
@@ -486,13 +486,13 @@ Moreover, every job of~$E_i$ has remaining size at least $S_i+2$ at time~$\tau$.
 \end{lemma}
 
 \begin{proof}
-\ref{it:geometry}~A job of copy~$i$ is released at time $u_{i-1}+s_ir_j$ with $0\le r_j<T_i$, hence during $[u_{i-1},u_i)$. For each $i'\in[m]$, copy~$i'$ has total size $s_{i'}\,p(I_{i'})\le Hs_{i'}$, and $u_{i'}-u_{i'-1}=s_{i'}T_{i'}\le Hs_{i'}$. Summing over $i'>i$ and using~\eqref{eq:scales}, we find that copies $i+1,\dots,m$ have total size at most~$S_i$ and that $\tau-u_i\le S_i$. The case $i=0$ gives $p(\bar I)\le V$ and $\tau\le V$.
+\ref{it:geometry}~A job of copy~$i$ is released at time $u_{i-1}+s_ir_j$ with $0\le r_j<T_i$, hence during $[u_{i-1},u_i)$. For each $i'\in[m]$, copy~$i'$ has total size $s_{i'}\cdot p(I_{i'})\le Hs_{i'}$, and $u_{i'}-u_{i'-1}=s_{i'}T_{i'}\le Hs_{i'}$. Summing over $i'>i$ and using~\eqref{eq:scales}, we find that copies $i+1,\dots,m$ have total size at most~$S_i$ and that $\tau-u_i\le S_i$. The case $i=0$ gives $p(\bar I)\le V$ and $\tau\le V$.
 
 \ref{it:offline}~During $[u_{i-1},u_i)$, process copy~$i$ by a schedule of~$I_i$ that leaves weight $B_i=U^*(I_i,T_i)$ unfinished at~$T_i$, stretched in time and size by~$s_i$, and do not process copy~$i$ afterwards. Stretching preserves feasibility, and the time windows are disjoint, so these schedules combine into a schedule of~$\bar I$ that leaves weight~$B_i$ of each copy~$i$ unfinished at~$\tau$. Since $(I_i,T_i)$ is a sample from the $(c,M)$-hard distribution~$\cD$, we have $\E_{(I_i,T_i)\sim\cD}[B_i]=\E_{(I_i,T_i)\sim\cD}[U^*(I_i,T_i)]\le1$ by~\cref{def:hard}\ref{def:hard-offline}.
 
 \ref{it:online}~Fix $i\in[m]$ and a realization of the first $i-1$ samples $(I_1,T_1),\dots,(I_{i-1},T_{i-1})$ of positive probability. This fixes copies $1,\dots,i-1$, their union~$\bar I_{<i}$, and the time~$u_{i-1}$ (\cref{fig:copies}). With these copies fixed, the behavior of~$A$ on copy~$i$ defines a deterministic online algorithm~$A_i$ for the unstretched sample~$I_i$. Since~$(I_i,T_i)$ is a fresh sample from~$\cD$, the hardness of~$\cD$ applies to~$A_i$.
 
-To define~$A_i$, let $\sigma_i(j)=(u_{i-1}+s_ir_j,\,s_ip_j,\,w_j)$ for a job $j=(r_j,p_j,w_j)$, and let $\sigma_i(I)=\{\sigma_i(j):j\in I\}$ for an instance~$I$. Thus copy~$i$ is~$\sigma_i(I_i)$. On input~$I$, algorithm~$A_i$ runs~$A$ on $\bar I_{<i}\cup\sigma_i(I)$ and, at time~$t$, gives each job $j\in I$ the rate that~$A$ gives~$\sigma_i(j)$ at time $u_{i-1}+s_it$. Processing that~$A$ assigns to~$\bar I_{<i}$ becomes idle time for~$A_i$. Since time and sizes are stretched by the same factor~$s_i$, these rates form a schedule of~$I$, and the remaining size of~$j$ at time~$t$ in $A_i(I)$ is the remaining size of~$\sigma_i(j)$ at time $u_{i-1}+s_it$ in $A(\bar I_{<i}\cup\sigma_i(I))$, divided by~$s_i$. Moreover, $A_i$ is a deterministic online algorithm: if two inputs contain the same jobs with release times before~$t$, then the instances on which~$A$ runs contain the same jobs with release times before $u_{i-1}+s_it$, so~$A_i$ inherits non-anticipation from~$A$.
+To define~$A_i$, let $\sigma_i(j)=(u_{i-1}+s_ir_j,\,s_ip_j,\,w_j)$ for a job $j=(r_j,p_j,w_j)$, and let $\sigma_i(I)=\{\sigma_i(j):j\in I\}$ for an instance~$I$. Thus copy~$i$ is~$\sigma_i(I_i)$. On input~$I$, algorithm~$A_i$ runs~$A$ on $\bar I_{<i}\cup\sigma_i(I)$ and, at time~$t$, gives each job $j\in I$ the rate that~$A$ gives~$\sigma_i(j)$ at time $u_{i-1}+s_it$. Processing that~$A$ assigns to~$\bar I_{<i}$ becomes idle time for~$A_i$. Since time and sizes are stretched by the same factor~$s_i$, these rates form a schedule of~$I$, and the remaining size of~$j$ at time~$t$ in $A_i(I)$ is the remaining size of~$\sigma_i(j)$ at time $u_{i-1}+s_it$ in $A(\bar I_{<i}\cup\sigma_i(I))$, divided by~$s_i$. Moreover, $A_i$ is a deterministic online algorithm. If two inputs contain the same jobs with release times before~$t$, then the instances on which~$A$ runs contain the same jobs with release times before $u_{i-1}+s_it$, so~$A_i$ inherits non-anticipation from~$A$.
 
 Now consider the input~$I_i$. The instance $\bar I_{<i}\cup\sigma_i(I_i)$ consists of copies $1,\dots,i$. It contains the same jobs as~$\bar I$ with release times before~$u_i$, because copies $i+1,\dots,m$ are released at~$u_i$ or later by~\ref{it:geometry}. By non-anticipation, the jobs of copy~$i$ therefore have the same remaining sizes at time~$u_i$ in $A(\bar I)$ and in $A(\bar I_{<i}\cup\sigma_i(I_i))$. Since $u_i=u_{i-1}+s_iT_i$, a job~$\sigma_i(j)$ of copy~$i$ belongs to~$E_i$ if and only if~$j$ has remaining size at least~$1$ at time~$T_i$ in $A_i(I_i)$, that is, if and only if $j\in R_{A_i}(I_i,T_i)$. As~$\sigma_i$ preserves weights, we obtain $X_i=\varphi_{A_i}^M(I_i,T_i)$. Since~$A_i$ depends only on the first $i-1$ samples, $X_i$ is determined by the first~$i$ samples.
 
@@ -540,7 +540,11 @@ Amplification appends a heavy job to $k$ copies of a terminal distribution and h
   \label{fig:amplification}
 \end{figure}
 
-The terminal time is the checkpoint~$h_K$ for a random index $K\in[k]$, drawn independently of the copies with $\Pr[K\ge i]=2^{1-i}$ for all $i\in[k]$. Equivalently, $K$ is the number of fair coin flips up to and including the first head, truncated at~$k$. Thus $2\Pr[K=i]\ge\Pr[K\ge i]$ for all $i\in[k]$, with equality for $i<k$. Moreover, $\E[K]=\sum_{i=1}^k\Pr[K\ge i]=2-2^{1-k}$ and $\Pr[K=k]=2^{1-k}$. Set $\beta=\E[K]-\Pr[K=k]=2-2^{2-k}$. The \emph{amplified} terminal distribution $\Amp_M(\cD)$ is the distribution of $\bigl((\bar I\cup\{J\})/\beta,h_K\bigr)$.
+The terminal time is the checkpoint~$h_K$ for a random index $K\in[k]$, drawn independently of the copies with $\Pr[K\ge i]=2^{1-i}$ for all $i\in[k]$. Equivalently, $K$ is the number of fair coin flips up to and including the first head, truncated at~$k$. Thus, for every $b\in\{0,\dots,k\}$,
+\begin{equation}\label{eq:tail}
+  \sum_{j=b+1}^k\Pr[K\ge j]\le2\Pr[K>b]\,,
+\end{equation}
+because the left-hand side equals $2^{1-b}-2^{1-k}$ and $\Pr[K>b]=2^{-b}$ for $b<k$, and both sides vanish for $b=k$. Moreover, $\E[K]=\sum_{i=1}^k\Pr[K\ge i]=2-2^{1-k}$ and $\Pr[K=k]=2^{1-k}$. Set $\beta=\E[K]-\Pr[K=k]=2-2^{2-k}$. The \emph{amplified} terminal distribution $\Amp_M(\cD)$ is the distribution of $\bigl((\bar I\cup\{J\})/\beta,h_K\bigr)$.
 
 \begin{lemma}\label{lem:amplification}
 Let $M\ge1$ be an integer, $k=2M+1$, and $\eta=2^{-k}$. If~$\cD$ is $(c,M)$-hard, then $\Amp_M(\cD)$ is $((1+\eta)c,(k+1)M)$-hard. Moreover, every terminal instance $(I,T)$ in its support satisfies $U^*(I,T)\le2M$.
@@ -551,7 +555,7 @@ All jobs of $\bar I\cup\{J\}$ are released by time $\tau<h_K$, and the support i
 \begin{subequations}\label{eq:amp-goal}
 \begin{align}
   \E\bigl[U^*(\bar I\cup\{J\},h_K)\bigr]&\le\beta\,,\label{eq:amp-goal-offline}\\*
-  \E\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigr]&\ge c\,\E[K]\,,\label{eq:amp-goal-online}
+  \E\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigr]&\ge c\cdot \E[K]\,,\label{eq:amp-goal-online}
 \end{align}
 \end{subequations}
 for every deterministic online algorithm~$A$, where the expectations are over the copies and~$K$.
@@ -562,11 +566,11 @@ We first derive the lemma from~\eqref{eq:amp-goal}. Since $k\ge3$, we have $1\le
 \end{equation*}
 Raising the cap in~\eqref{eq:amp-goal-online} from $(k+1)M$ to $\beta(k+1)M$ can only increase the capped robust backlog, so
 \begin{equation*}
-  \E\bigl[\varphi_A^{\beta(k+1)M}(\bar I\cup\{J\},h_K)\bigr]\ge c\,\E[K]\ge\beta(1+\eta)c\,.
+  \E\bigl[\varphi_A^{\beta(k+1)M}(\bar I\cup\{J\},h_K)\bigr]\ge c\cdot \E[K]\ge\beta(1+\eta)c\,.
 \end{equation*}
-With~\eqref{eq:amp-goal-offline}, this verifies the assumptions of~\cref{obs:basic}\ref{obs:scaling} for the distribution of $(\bar I\cup\{J\},h_K)$, with $\lambda=\beta$, gap $(1+\eta)c$, and cap $(k+1)M$; note that $(1+\eta)c\le2M\le(k+1)M$ because $c\le M$. Hence $\Amp_M(\cD)$, the distribution of $\bigl((\bar I\cup\{J\})/\beta,h_K\bigr)$, is $((1+\eta)c,(k+1)M)$-hard.
+With~\eqref{eq:amp-goal-offline}, this verifies the assumptions of~\cref{obs:basic}\ref{obs:scaling} for the distribution of $(\bar I\cup\{J\},h_K)$, with $\lambda=\beta$, gap $(1+\eta)c$, and cap $(k+1)M$. Here $(1+\eta)c\le2M\le(k+1)M$ because $c\le M$. Hence $\Amp_M(\cD)$, the distribution of $\bigl((\bar I\cup\{J\})/\beta,h_K\bigr)$, is $((1+\eta)c,(k+1)M)$-hard.
 
-\emph{Proof of~\eqref{eq:amp-goal-offline}.} Follow the schedule of~\cref{lem:copies}\ref{it:offline} until~$\tau$; it leaves weight~$B_j$ of copy~$j$ unfinished at~$\tau$, where $\E[B_j]\le1$. By the choice of~$h_i$, it can then complete during $[\tau,h_i)$ either~$J$ and the remaining jobs of copies $i+1,\dots,k$, or all remaining jobs of~$\bar I$. Thus
+\emph{Proof of~\eqref{eq:amp-goal-offline}.} Follow the schedule of~\cref{lem:copies}\ref{it:offline} until~$\tau$, which leaves weight~$B_j$ of copy~$j$ unfinished at~$\tau$, where $\E[B_j]\le1$. By the choice of~$h_i$, it can then complete during $[\tau,h_i)$ either~$J$ and the remaining jobs of copies $i+1,\dots,k$, or all remaining jobs of~$\bar I$. Thus
 \begin{equation*}
   U^*(\bar I\cup\{J\},h_i)\le\min\left\{\sum_{j\le i}B_j,\,2M\right\}\,.
 \end{equation*}
@@ -584,32 +588,30 @@ Averaging over~$K$ and using $2M=k-1$ gives
 
 \emph{Proof of~\eqref{eq:amp-goal-online}.} Fix a deterministic online algorithm~$A$. Let $Z=((I_1,T_1),\dots,(I_k,T_k))\sim\cD^k$ denote the tuple of independent samples that form the copies, and fix a realization of~$Z$. The variable~$K$ affects only the terminal time, so the schedule $A(\bar I\cup\{J\})$ is fixed, and only the checkpoint at which we evaluate it is random. Let~$E_j$ and~$X_j$ be as in~\cref{lem:copies}\ref{it:online}. Since~$J$ is released at time~$\tau$, non-anticipation implies that $A(\bar I\cup\{J\})$ and $A(\bar I)$ process the jobs of~$\bar I$ identically before~$\tau$. Hence every job of~$E_j$ has remaining size at least $S_j+2$ at~$\tau$ also in $A(\bar I\cup\{J\})$.
 
-We first show that for each $j\in[k]$, either~$J$ is robust at~$h_j$, or all jobs of~$E_j$ are robust at every checkpoint~$h_i$ with $i\ge j$. Suppose that~$J$ is not robust at~$h_j$. Then~$J$ received more than $V-1$ processing during $[\tau,h_j)$, which leaves less than $(V+S_j)-(V-1)=S_j+1$ processing for the jobs of~$\bar I$. Every job of~$E_j$ therefore has remaining size greater than~$1$ at~$h_j$, and hence also at every earlier checkpoint~$h_i$ with $i\ge j$.
+The heavy job splits the checkpoints at a single index. Let $b\in\{0,\dots,k\}$ be the largest index~$j$ such that~$J$ is not robust at~$h_j$, with $b=0$ if~$J$ is robust at every checkpoint. The remaining size of~$J$ does not increase over time and $h_1>\dots>h_k$, so~$J$ is robust at~$h_i$ if and only if $i>b$.
 
-We now bound the capped robust backlog from below by charges to the copies. For each copy~$j \in [k]$, assign charges according to the following two cases:
-\begin{itemize}
-\item If~$J$ is not robust at~$h_j$, charge~$X_j$ at every checkpoint~$h_i$ with $i\ge j$.
-\item If~$J$ is robust at~$h_j$, charge~$2M$ at~$h_j$ only.
-\end{itemize}
+We claim that for every $j\le b$, all jobs of~$E_j$ are robust at every checkpoint~$h_i$ with $i\ge j$. Indeed, $J$ is not robust at~$h_j$, so it received more than $V-1$ processing during $[\tau,h_j)$, which leaves less than $(V+S_j)-(V-1)=S_j+1$ processing for the jobs of~$\bar I$. Every job of~$E_j$ therefore has remaining size greater than~$1$ at~$h_j$, and hence also at every earlier checkpoint~$h_i$ with $i\ge j$.
 
-
-At a fixed checkpoint~$h_i$, only copies $j\le i$ are charged. Their total charge satisfies two bounds:
-\begin{itemize}
-\item \emph{Robust backlog.} A charge~$X_j$ is at most~$w(E_j)$, and the jobs of~$E_j$ are then robust at~$h_i$. A charge~$2M$ comes only from copy~$i$ and equals the weight of~$J$, which is then robust at~$h_i$. Since the sets $E_1,\dots,E_k$ and~$\{J\}$ are pairwise disjoint, the total charge is at most the weight of the robust backlog at~$h_i$.
-\item \emph{Cap.} If copy~$i$ receives charge~$2M$, the at most $k-1$ other charged copies receive at most~$M$ each, so the total is at most $2M+(k-1)M=(k+1)M$. Otherwise, the total is at most~$kM$.
-\end{itemize}
-Thus the total charge at~$h_i$ is at most $\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_i)$.
-
-Finally, we take expectations, first over~$K$ with~$Z$ fixed. The copies, the schedule, and the values~$X_j$ remain fixed, and the distribution of~$K$ is unchanged because~$K$ is independent of~$Z$. The expected charge of copy~$j$ at~$h_K$ is $X_j\Pr[K\ge j]$ if~$J$ is not robust at~$h_j$, and $2M\Pr[K=j]$ otherwise. Since $X_j\le M$ and $2\Pr[K=j]\ge\Pr[K\ge j]$, both are at least $X_j\Pr[K\ge j]$. As the total charge at~$h_K$ is at most $\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)$ for every value of~$K$, summing over the copies gives
+Fix a checkpoint~$h_i$. By the claim, its robust backlog contains the sets~$E_j$ with $j\le\min\{i,b\}$, and it contains~$J$ if $i>b$. The sets $E_1,\dots,E_k$ and~$\{J\}$ are pairwise disjoint, and $X_j\le w(E_j)$, so the weight of the robust backlog at~$h_i$ is at least
 \begin{equation*}
-  \E_K\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigm|Z\bigr]\ge\sum_{j=1}^k\Pr[K\ge j]\,X_j\,.
+  \sum_{j\le\min\{i,b\}}X_j+2M\cdot\bone_{\{i>b\}}\,.
 \end{equation*}
+This sum is at most $(k+1)M$. Indeed, since $X_j\le M$, it is at most~$kM$ if $i\le b$, and at most $(k-1)M+2M$ if $i>b$, because then $b\le k-1$. It is therefore a lower bound on $\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_i)$.
+
+We now take expectations, first over~$K$ with~$Z$ fixed. The copies, the schedule, the index~$b$, and the values~$X_j$ remain fixed, and the distribution of~$K$ is unchanged because~$K$ is independent of~$Z$. A copy $j\le b$ contributes~$X_j$ whenever $K\ge j$, and~$J$ contributes~$2M$ whenever $K>b$, so
+\begin{align*}
+  \E_K\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigm|Z\bigr]
+  &\ge\sum_{j\le b}\Pr[K\ge j]\cdot X_j+2M\Pr[K>b]\\*
+  &\ge\sum_{j=1}^k\Pr[K\ge j]\cdot X_j\,.
+\end{align*}
+In the second inequality, the heavy job makes up for the copies $j>b$. These satisfy $X_j\le M$, and the tail bound~\eqref{eq:tail} shows that $\sum_{j>b}\Pr[K\ge j]$ is at most $2\Pr[K>b]$.
+
 We now average over~$Z\sim\cD^k$. Since~$X_j$ is determined by the first~$j$ samples, averaging the conditional bound of~\cref{lem:copies}\ref{it:online} over the first $j-1$ samples gives $\E_{Z\sim\cD^k}[X_j]\ge c$ for every~$j$. The law of total expectation therefore yields
 \begin{align*}
   \E_{Z,K}\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigr]
   &=\E_{Z\sim\cD^k}\Bigl[\E_K\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigm|Z\bigr]\Bigr]\\*
-  &\ge\sum_{j=1}^k\Pr[K\ge j]\,\E_{Z\sim\cD^k}[X_j]\\*
-  &\ge c\sum_{j=1}^k\Pr[K\ge j]=c\,\E_K[K]\,.
+  &\ge\sum_{j=1}^k\Pr[K\ge j]\cdot \E_{Z\sim\cD^k}[X_j]\\*
+  &\ge c\sum_{j=1}^k\Pr[K\ge j]=c\cdot \E_K[K]\,.
 \end{align*}
 This is~\eqref{eq:amp-goal-online}.
 \end{proof}
@@ -676,14 +678,14 @@ We show by induction on~$q$ that~$\cD_q$ is $(c_q,M)$-hard, where $c_q=1+q\eta/2
 \end{equation*}
 Its cap satisfies $(1+\eta)c_{q-1}<M$, because $c_{q-1}<c_N=M/2$ and $\eta<1$. By~\cref{obs:basic}\ref{obs:monotone}, $\cD_q$ is $(c_q,M)$-hard. Finally, $c_N=M/2\ge2\rho$, which proves~\cref{thm:hard}. Using the multiplicative bound $(1+\eta)c_{q-1}-\eta/2\ge(1+\eta/2)c_{q-1}$ instead would reduce the number of rounds to $O(2^k\log M)$, which does not change the asymptotic bounds of~\cref{sec:quantitative}.
 
-By induction on~$q$, all instances in the support of~$\cD_q$ have the same number of jobs: if this number is~$n$ for~$\cD_{q-1}$, then it is $m(kn+1)$ for~$\cD_q$. Flooding (\cref{lem:flooding}) with a common stream length adds the same number of jobs to each instance. Hence our lower bounds hold even for algorithms that know the number of jobs in advance.
+By induction on~$q$, all instances in the support of~$\cD_q$ have the same number of jobs. If this number is~$n$ for~$\cD_{q-1}$, then it is $m(kn+1)$ for~$\cD_q$. Flooding (\cref{lem:flooding}) with a common stream length adds the same number of jobs to each instance. Hence our lower bounds hold even for algorithms that know the number of jobs in advance.
 
 \section{Dependence on \texorpdfstring{$W$, $P$, $D$, and~$n$}{W, P, D, and n}}\label{sec:quantitative}
 
 For an instance~$I$, let $W(I)=\max_{j\in I}w_j/\min_{j\in I}w_j$ and $P(I)=\max_{j\in I}p_j/\min_{j\in I}p_j$ be its weight and size ratios. Let $D(I)=\max_{j\in I}(w_j/p_j)/\min_{j\in I}(w_j/p_j)$ be its density ratio, and let~$|I|$ be its number of jobs. In this section, all logarithms are to base~$2$. Bounding these parameters in the construction of~\cref{sec:iteration} gives the following refinement of~\cref{thm:main}.
 
 \begin{theorem}\label{thm:quant-refined}
-There is an absolute constant $C\ge1$ such that for every $\rho\ge1$, there is a probability distribution~$\hat\cD$ over finitely many nonempty instances such that every instance~$\hat I$ in its support satisfies
+There is an absolute constant $C\ge1$ such that for every $\rho\ge1$, there is a probability distribution~$\hat\cD$ over finitely many instances such that every instance~$\hat I$ in its support satisfies
 \begin{equation*}
   W(\hat I)\le2^{2^{C\rho}}\qquad \text{and} \qquad \max\{P(\hat I),D(\hat I),|\hat I|\}\le2^{2^{2^{C\rho}}}\,,
 \end{equation*}
@@ -696,15 +698,15 @@ Let $M$, $k$, $\eta$, $m$, $N$, and $\cD_0,\dots,\cD_N$ be as in~\cref{sec:itera
 \emph{Weights.} All weights in~$\cD_q$ lie in $[(2m)^{-q},1]$. Indeed, the initial weight is~$1$. Each round adds a heavy job of weight~$2M$ and divides all weights by~$\beta m\in[m,2m]$, where $\beta\in[1,2]$ is the normalization of amplification. The claim follows by induction, since $m\ge2M$. The stream weight~$1/2$ lies in the same interval for $q=N\ge1$, so $W(\hat I)\le(2m)^N$.
 
 \emph{Sizes.} The backward recurrence for the copy scales in~\cref{def:concatenation} gives $S_{i-1}+1=(2H+1)(S_i+1)$. Since $S_r=0$ for a concatenation of~$r$ copies, and $2H+1\le H^2$ for $H\ge3$, such a concatenation with bound $H\ge3$ has $V=(2H+1)^r-1\le H^{2r}$.
-The output of amplification with bound~$H$ has total size at most~$2V$ and terminal times at most $\tau+V+S_1\le3V$. Thus $H^{3k}$ is a bound for it, since $3V\le3H^{2k}\le H^{3k}$. Averaging with the bound~$H^{3k}$ then yields total sizes and terminal times at most $(H^{3k})^{2m}=H^{6km}$, by~\cref{lem:copies}\ref{it:geometry}. We therefore fix the bounds as follows: in round~$q$, amplification uses the bound~$H_{q-1}$, and averaging uses the bound~$H_{q-1}^{3k}$, where $H_0=3$ and $H_q=H_{q-1}^{6km}=3^{(6km)^q}$. By induction, $H_q$ is a bound for~$\cD_q$.
+The output of amplification with bound~$H$ has total size at most~$2V$ and terminal times at most $\tau+V+S_1\le3V$. Thus $H^{3k}$ is a bound for it, since $3V\le3H^{2k}\le H^{3k}$. Averaging with the bound~$H^{3k}$ then yields total sizes and terminal times at most $(H^{3k})^{2m}=H^{6km}$, by~\cref{lem:copies}\ref{it:geometry}. We therefore fix the bounds as follows. In round~$q$, amplification uses the bound~$H_{q-1}$, and averaging uses the bound~$H_{q-1}^{3k}$, where $H_0=3$ and $H_q=H_{q-1}^{6km}=3^{(6km)^q}$. By induction, $H_q$ is a bound for~$\cD_q$.
 
-All jobs in~$\cD_q$ also have size at least~$2$: the initial job has size~$2$, copying stretches sizes by factors $s_i\ge2$, and every heavy job has size $V\ge2H\ge2$. After flooding, all sizes lie in $[1/(2M),H_N]$, so $P(\hat I)\le2MH_N$.
+All jobs in~$\cD_q$ also have size at least~$2$, because the initial job has size~$2$, copying stretches sizes by factors $s_i\ge2$, and every heavy job has size $V\ge2H\ge2$. After flooding, all sizes lie in $[1/(2M),H_N]$, so $P(\hat I)\le2MH_N$.
 
 \emph{Densities.} For every instance~$I$, the ratio of any two job densities satisfies $(w_j/p_j)/(w_\ell/p_\ell)=(w_j/w_\ell)(p_\ell/p_j)\le W(I)P(I)$. Hence $D(I)\le W(I)P(I)$, and the preceding bounds give $D(\hat I)\le2MH_N(2m)^N$.
 
 \emph{Cost and number of jobs.} An instance~$I$ in the support of~$\cD_N$ consists of jobs of size at least~$2$ and has total size at most~$H_N$, so it has at most $H_N/2$ jobs, each of weight at most~$1$. Hence $w(I)\le H_N$, and the additive term $w(I)(T+p(I))$ in~\cref{lem:flooding} is at most $2H_N^2$. Choose $L=4H_N^2+2$, a multiple of $1/(2M)$ because~$H_N$ and~$M$ are integers. Since~$\cD_N$ is $(2\rho,M)$-hard, the lemma gives
 \begin{equation*}
-  \E[F_A(\hat I)]-\rho\,\E[\OPT(\hat I)]
+  \E[F_A(\hat I)]-\rho\cdot \E[\OPT(\hat I)]
   \ge2\rho L-\rho\bigl(\tfrac32L+2H_N^2\bigr)
   =\rho(L/2-2H_N^2)=\rho>0
 \end{equation*}
@@ -726,7 +728,7 @@ Together with $P(\hat I)\le2MH_N$, $D(\hat I)\le2MH_N(2m)^N$, and $|\hat I|\le(2
 \begin{proof}[Proof of \cref{thm:quant}]
 Let $W,P,D,n\ge16$, and let~$C$ be the constant of~\cref{thm:quant-refined}. Fix a randomized online algorithm~$\cA$ and set $\rho=\min\{\log\log W,\log\log\log\min\{P,D,n\}\}/C$. This is positive because $W,P,D,n\ge16$. If $\rho<1$, there is nothing to show, since no algorithm has competitive ratio less than~$1$.
 
-Otherwise, let $\Gamma\ge0$, and let~$\hat\cD$ be the distribution of~\cref{thm:quant-refined}. Its support consists of finitely many nonempty instances, so there is $c>0$ with $\OPT(\hat I)\ge c$ throughout the support. Multiplying all weights by $\lambda=2(\Gamma+1)/(\rho c)$ preserves $W$, $P$, $D$, and the number of jobs, and it scales both costs by~$\lambda$. Hence the distribution of~$\lambda\hat I$ for $\hat I\sim\hat\cD$ also satisfies the guarantee of~\cref{thm:quant-refined}: for a deterministic online algorithm~$A$, apply the guarantee to $A'(I)=A(\lambda I)$, as in the weight-scaling argument of~\cref{obs:basic}\ref{obs:scaling}. By~\cref{lem:yao}, there is an instance~$I$ in the support of this distribution with
+Otherwise, let $\Gamma\ge0$, and let~$\hat\cD$ be the distribution of~\cref{thm:quant-refined}. Its support consists of finitely many instances, so there is $c>0$ with $\OPT(\hat I)\ge c$ throughout the support. Multiplying all weights by $\lambda=2(\Gamma+1)/(\rho c)$ preserves $W$, $P$, $D$, and the number of jobs, and it scales both costs by~$\lambda$. Hence the distribution of~$\lambda\hat I$ for $\hat I\sim\hat\cD$ also satisfies the guarantee of~\cref{thm:quant-refined}. For a deterministic online algorithm~$A$, apply the guarantee to $A'(I)=A(\lambda I)$, as in the weight-scaling argument of~\cref{obs:basic}\ref{obs:scaling}. By~\cref{lem:yao}, there is an instance~$I$ in the support of this distribution with
 \begin{equation*}
   W(I)\le2^{2^{C\rho}}\le W \qquad \text{and} \qquad
   \max\{P(I),D(I),|I|\}\le2^{2^{2^{C\rho}}}\le\min\{P,D,n\}
@@ -736,14 +738,14 @@ and $\E_{A\sim\cA}[F_A(I)]\ge \rho\cdot\OPT(I)\ge(\rho/2)\OPT(I)+\Gamma+1$, wher
 
 \subsection{A high-probability lower bound}\label{sec:probability}
 
-The last averaging step also yields the high-probability lower bound of~\cref{thm:probability}. In the notation of this section, there is an absolute constant $C\ge1$ such that, for every $\rho\ge1$ and randomized online algorithm~$\cA$, there is a nonempty instance~$I$ with
+The last averaging step also yields the high-probability lower bound of~\cref{thm:probability}. In the notation of this section, there is an absolute constant $C\ge1$ such that, for every $\rho\ge1$ and randomized online algorithm~$\cA$, there is an instance~$I$ with
 \begin{equation*}
   W(I)\le2^{2^{C\rho}}\qquad \text{and} \qquad
   \max\{P(I),D(I),|I|\}\le2^{2^{2^{C\rho}}}
 \end{equation*}
 and
 \begin{equation*}
-  \Pr_{A\sim\cA}\bigl[F_A(I)\ge \rho\,\OPT(I)\bigr]\ge1-2^{-\rho}\,.
+  \Pr_{A\sim\cA}\bigl[F_A(I)\ge \rho\cdot \OPT(I)\bigr]\ge1-2^{-\rho}\,.
 \end{equation*}
 
 \begin{proof}[Proof of \cref{thm:probability}]
@@ -773,16 +775,16 @@ with probability at least $1-\eta\ge1-2^{-\rho}$, where the last inequality uses
 
 Flood~$\cD_N$ with the stream length $L=4H_N^2+2$ from the proof of~\cref{thm:quant-refined}, applied to the construction with~$2\rho$. On the event above, the pointwise bounds of~\cref{lem:flooding} give
 \begin{equation*}
-  F_A(\hat I)-\rho\,\OPT(\hat I)
+  F_A(\hat I)-\rho\cdot \OPT(\hat I)
   \ge3\rho L-\rho\bigl(\tfrac52L+2H_N^2\bigr)
   =\rho(L/2-2H_N^2)=\rho>0\,.
 \end{equation*}
-Thus the resulting finite distribution~$\hat\cD$ over nonempty instances satisfies $\Pr_{\hat I\sim\hat\cD}[F_A(\hat I)\ge \rho\,\OPT(\hat I)]\ge1-2^{-\rho}$ for every deterministic~$A$. The parameter bounds follow from the proof of~\cref{thm:quant-refined}, with an absolute constant enlarged to account for the use of~$2\rho$.
+Thus the resulting finite distribution~$\hat\cD$ satisfies $\Pr_{\hat I\sim\hat\cD}[F_A(\hat I)\ge \rho\cdot \OPT(\hat I)]\ge1-2^{-\rho}$ for every deterministic~$A$. The parameter bounds follow from the proof of~\cref{thm:quant-refined}, with an absolute constant enlarged to account for the use of~$2\rho$.
 
 Finally, average over $A\sim\cA$. Since~$\hat\cD$ has finite support, we may exchange the expectations over the algorithm and the instance, giving
 \begin{equation*}
   \E_{\hat I\sim\hat\cD}
-  \left[\Pr_{A\sim\cA}\bigl[F_A(\hat I)\ge \rho\,\OPT(\hat I)\bigr]\right]
+  \left[\Pr_{A\sim\cA}\bigl[F_A(\hat I)\ge \rho\cdot \OPT(\hat I)\bigr]\right]
   \ge1-2^{-\rho}\,.
 \end{equation*}
 Hence some instance in the support of~$\hat\cD$ satisfies the claim.
@@ -819,18 +821,14 @@ Dividing all weights by~$m$ preserves both properties, which proves~\ref{it:pred
 \begin{proof}[Proof of \cref{thm:interarrival}]
 Fix $\eps>0$ and $\rho\ge1$. As in the proof of~\cref{thm:probability}, use the construction of~\cref{sec:iteration} with~$2\rho$ in place of~$\rho$ and the bounds from the proof of~\cref{thm:quant-refined}, except that now $H_0=\max\{3,\lceil1/(2\eps)\rceil\}$. That proof uses only that~$H_0\ge3$ is an integer and a bound for~$\cD_0$, so $H_q=H_0^{(6km)^q}$ is a bound for~$\cD_q$, and the amplification of round~$q$ uses the bound $H_{q-1}\ge1/(2\eps)$.
 
-The single-job distribution~$\cD_0$ is $\eps$-predictable: its job is released at time~$0$, and its only gap is~$1$. By~\cref{lem:predictable} and induction on~$q$, every~$\cD_q$ is $\eps$-predictable. Flooding~$\cD_N$ with the stream length $L=4H_N^2+2$ releases the first stream job at the terminal time~$T$, so the last gap of $(I,T)$ becomes the time before the first stream job, and the further stream jobs follow at the fixed spacing $1/(2M)$. All stream jobs have the same size and weight. The resulting random instance~$\hat I$ therefore has the form required in~\cref{thm:interarrival}: its sizes and weights in release order are fixed, its first job is released at time~$0$, and its interarrival times are independent, each with finitely many values in an interval $[g,(1+\eps)g]$ with $g>0$.
+The single-job distribution~$\cD_0$ is $\eps$-predictable, since its job is released at time~$0$ and its only gap is~$1$. By~\cref{lem:predictable} and induction on~$q$, every~$\cD_q$ is $\eps$-predictable. Flooding~$\cD_N$ with the stream length $L=4H_N^2+2$ releases the first stream job at the terminal time~$T$, so the last gap of $(I,T)$ becomes the time before the first stream job, and the further stream jobs follow at the fixed spacing $1/(2M)$. All stream jobs have the same size and weight. The resulting random instance~$\hat I$ therefore has the form required in~\cref{thm:interarrival}. Its sizes and weights in release order are fixed, its first job is released at time~$0$, and its interarrival times are independent, each with finitely many values in an interval $[g,(1+\eps)g]$ with $g>0$.
 
-The distribution of~$\hat I$ is the distribution~$\hat\cD$ in the proofs of~\cref{thm:quant-refined,thm:probability}, applied with~$2\rho$ and the new value of~$H_0$. Every deterministic online algorithm~$A$ therefore satisfies $\E[F_A(\hat I)]\ge2\rho\cdot\E[\OPT(\hat I)]$ and $\Pr[F_A(\hat I)\ge\rho\,\OPT(\hat I)]\ge1-2^{-\rho}$. The parameter bounds change only through~$H_N$, for which now $\log\log H_N=N\log(6km)+\log\log H_0$. Hence they hold with a constant~$C$ that depends only on~$\eps$, and~$C$ can be chosen independently of~$\eps$ whenever $\eps\ge2^{-2^{2^\rho}}$.
+The distribution of~$\hat I$ is the distribution~$\hat\cD$ in the proofs of~\cref{thm:quant-refined,thm:probability}, applied with~$2\rho$ and the new value of~$H_0$. Every deterministic online algorithm~$A$ therefore satisfies $\E[F_A(\hat I)]\ge2\rho\cdot\E[\OPT(\hat I)]$ and $\Pr[F_A(\hat I)\ge\rho\cdot \OPT(\hat I)]\ge1-2^{-\rho}$. The parameter bounds change only through~$H_N$, for which now $\log\log H_N=N\log(6km)+\log\log H_0$. Hence they hold with a constant~$C$ that depends only on~$\eps$, and~$C$ can be chosen independently of~$\eps$ whenever $\eps\ge2^{-2^{2^\rho}}$.
 \end{proof}
 
 \section{Concluding remarks}\label{sec:conclusion}
 
-We have shown that randomization does not allow a constant competitive ratio for online weighted flow time on a single machine. Our lower bound is $\Omega(\min\{\log\log W,\log\log\log\min\{P,D,n\}\})$. Its dependence on~$W$ and~$P$ is exponentially weaker than in the deterministic lower bound of Bansal and Chan~\cite{BansalC09}. The best known upper bound is $O(\log\min\{P,D,W\})$, achieved by a deterministic algorithm~\cite{AzarT18}. The weak parameter dependence stems from the amplification step. After averaging, each round retains an additive increase of $\eta/2$, where $\eta=2^{-(2M+1)}$ is exponentially small in the cap~$M$. Our construction therefore uses $2^{\Theta(\rho)}$ rounds to reach the gap~$2\rho$. An amplification step whose improvement~$\eta$ is only polynomially small in the cap would lead to lower bounds that are polynomial in $\log W$ and $\log\log P$. Within our analysis, such an improvement cannot come from a different weight of the heavy job, number of copies, or distribution of the checkpoint index~$K$. If the heavy job has weight~$\lambda M$ for an integer $\lambda\ge2$, our charging argument needs $\Pr[K=j]\ge\Pr[K\ge j]/\lambda$ for every~$j$, whereas our offline bound becomes $\E[\min\{K,\lambda M\}]$ and thus improves on~$\E[K]$ only at the checkpoints~$h_i$ with $i>\lambda M$. Under the first condition, $\E[(K-\lambda M)^+]\le\E[\min\{K,\lambda M\}]/(e^M-1)$, so the gap improves by a factor of at most $1+1/(e^M-1)$. More generally, it remains open whether randomized algorithms can beat the deterministic lower bound, for example by achieving a competitive ratio of $O(\log\log W)$.
-
-In terms of the number~$n$ of jobs, our lower bound $\Omega(\log\log\log n)$ is weaker still, because flooding dominates the job count. Each round multiplies the number of jobs by at most $m(k+1)$, so the instances in the support of~$\cD_N$ have at most $(m(k+1))^N=2^{2^{O(\rho)}}$ jobs. The stream must be long enough to make the cost before the terminal time negligible, and it consists of more than~$P$ jobs. A conversion from terminal-time gaps to flow-time gaps that adds only polynomially many jobs would therefore give $\Omega(\log\log n)$. Whether a single machine admits an $O(\log n)$-competitive algorithm remains open. On two or more identical machines, the lower bound of Chekuri, Khanna, and Zhu~\cite{ChekuriKZ01} rules out a polylogarithmic dependence on~$n$.
-
-By~\cref{thm:interarrival}, the difficulty lies in the timing of the releases alone: knowing all sizes and weights, and every interarrival time up to a factor of $1+\eps$, does not allow a constant competitive ratio. Some uncertainty is necessary, since for $\eps=0$ the instance is known in advance and the algorithm can follow an optimal schedule.
+We have shown that randomization does not allow a constant competitive ratio for online weighted flow time on a single machine. Our lower bound $\Omega(\min\{\log\log W,\log\log\log\min\{P,D,n\}\})$ is exponentially weaker in~$W$ and~$P$ than the deterministic lower bound of Bansal and Chan~\cite{BansalC09}, and the best known upper bound is $O(\log\min\{P,D,W\})$~\cite{AzarT18}. The loss stems from amplification, which improves the gap only by a factor of $1+2^{-\Theta(M)}$ for cap~$M$. An improvement that is polynomially small in the cap would give lower bounds polynomial in $\log W$ and $\log\log P$. It remains open whether randomized algorithms can beat the deterministic lower bound, and whether a single machine admits an $O(\log n)$-competitive algorithm.
 
 \printbibliography
 
