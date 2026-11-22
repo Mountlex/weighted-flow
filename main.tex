@@ -265,10 +265,10 @@ It suffices to construct, for every~$\rho$, a distribution over instances on whi
 Weighted flow time is the integral of the active weight over time. An algorithm whose active weight is always at most $c$ times the minimum possible active weight at that time is therefore $c$-competitive. Conversely, Becchetti, Leonardi, Marchetti-Spaccamela, and Pruhs~\cite{BecchettiLMP06} showed that every $c$-competitive deterministic online algorithm has this property, using a stream of short, dense jobs. We use this converse direction. We create a large expected gap in active weight at a hidden time, then use such a stream to make the gap persist long enough to dominate the weighted flow time. This was also used by Bansal and Chan~\cite{BansalC09}.
 
 \paragraph{Hard terminal distributions.}
-Our building blocks are \emph{terminal distributions} over pairs $(I,T)$ of instances and times, where~$T$ is later than all release times in~$I$. The algorithm sees the jobs of~$I$ as they arrive, but is not given~$T$. Let $U^*(I,T)$ be the minimum active weight at~$T$ among all feasible schedules. Online, we count only \emph{robust} jobs, whose remaining size at~$T$ is at least~$1$. These jobs form the \emph{robust backlog} and cannot finish before~$T+1$. We cap their total weight at~$M$. A terminal distribution is \emph{$(c,M)$-hard} if $\E[U^*(I,T)]\le1$, whereas every deterministic algorithm has expected capped robust backlog at least~$c$. We call~$c$ the \emph{gap} and~$M$ the \emph{cap}.
+Our building blocks are \emph{terminal distributions} over pairs $(I,T)$ of instances and times, where~$T$ is later than all release times in~$I$. The algorithm sees the jobs of~$I$ as they arrive, but is not given~$T$. Let $w^*(I,T)$ be the minimum active weight at~$T$ among all feasible schedules. Online, we count only \emph{robust} jobs, whose remaining size at~$T$ is at least~$1$. These jobs form the \emph{robust backlog} and cannot finish before~$T+1$. We cap their total weight at~$M$. A terminal distribution is \emph{$(c,M)$-hard} if $\E[w^*(I,T)]\le1$, whereas every deterministic algorithm has expected capped robust backlog at least~$c$. We call~$c$ the \emph{gap} and~$M$ the \emph{cap}.
 
 \paragraph{Flooding.}
-A $(2\rho,M)$-hard terminal distribution yields the lower bound~$\rho$ by \emph{flooding}. Starting at~$T$, a long stream of jobs of weight~$1/2$ and density~$M$ keeps the machine busy. Until the algorithm has spent one unit of processing on old jobs, its robust backlog remains unfinished. Afterwards, the delayed stream jobs have total weight at least~$M$. Hence its active weight never drops below its capped robust backlog at~$T$. An offline schedule can instead leave weight $U^*(I,T)$ unfinished and process each stream job immediately, keeping active weight at $U^*(I,T)+1/2$. A sufficiently long stream makes this gap dominate the costs before and after it.
+A $(2\rho,M)$-hard terminal distribution yields the lower bound~$\rho$ by \emph{flooding}. Starting at~$T$, a long stream of jobs of weight~$1/2$ and density~$M$ keeps the machine busy. Until the algorithm has spent one unit of processing on old jobs, its robust backlog remains unfinished. Afterwards, the delayed stream jobs have total weight at least~$M$. Hence its active weight never drops below its capped robust backlog at~$T$. An offline schedule can instead leave weight $w^*(I,T)$ unfinished and process each stream job immediately, keeping active weight at $w^*(I,T)+1/2$. A sufficiently long stream makes this gap dominate the costs before and after it.
 
 It thus suffices to construct $(c,M)$-hard terminal distributions with arbitrarily large gap~$c$. We start from the trivial $(1,M)$-hard distribution that consists of a single job of size~$2$ and weight~$1$, released at time~$0$, with terminal time~$1$, and we alternate two operations, \emph{amplification} and \emph{averaging}. Both build on the following way of combining copies of a hard distribution.
 
@@ -328,7 +328,7 @@ We first define hardness at a hidden terminal time and show how it yields a lowe
 
 A \emph{terminal instance} is a pair $(I,T)$ of an instance~$I$ and a \emph{terminal time} $T>0$ such that all jobs of~$I$ are released before~$T$. A \emph{terminal distribution} is a probability distribution over finitely many terminal instances. An online algorithm processes only~$I$, so its schedule $A(I)$ does not depend on~$T$. The algorithm may know the distribution in advance. Since~$I$ and~$T$ can be correlated, the jobs it sees may reveal information about~$T$.
 
-For a terminal instance $(I,T)$, let $U^*(I,T)$ be the minimum active weight at time~$T$ over all schedules of~$I$. A job is \emph{robust} at time~$t$ in a schedule if its remaining size at~$t$ is at least~$1$. For a deterministic online algorithm~$A$, the \emph{robust backlog} $R_A(I,T)$ of~$A$ at time~$T$ is the set of jobs of~$I$ that are robust at time~$T$ in~$A(I)$. These jobs are active at time~$T$, and none of them can be completed before time~$T+1$. For $M>0$, the \emph{capped robust backlog} is
+For a terminal instance $(I,T)$, let $w^*(I,T)$ be the minimum active weight at time~$T$ over all schedules of~$I$. A job is \emph{robust} at time~$t$ in a schedule if its remaining size at~$t$ is at least~$1$. For a deterministic online algorithm~$A$, the \emph{robust backlog} $R_A(I,T)$ of~$A$ at time~$T$ is the set of jobs of~$I$ that are robust at time~$T$ in~$A(I)$. These jobs are active at time~$T$, and none of them can be completed before time~$T+1$. For $M>0$, the \emph{capped robust backlog} is
 \begin{equation*}
   \varphi_A^M(I,T):=\min\bigl\{M,\,w(R_A(I,T))\bigr\}\,.
 \end{equation*}
@@ -336,7 +336,7 @@ For a terminal instance $(I,T)$, let $U^*(I,T)$ be the minimum active weight at 
 \begin{definition}\label{def:hard}
 Let $0<c\le M$. A terminal distribution~$\cD$ is \emph{$(c,M)$-hard} if
 \begin{enumerate}[label=(\roman*)]
-	\item\label{def:hard-offline} $\E_{(I,T)\sim\cD}\bigl[U^*(I,T)\bigr]\le1$ and
+	\item\label{def:hard-offline} $\E_{(I,T)\sim\cD}\bigl[w^*(I,T)\bigr]\le1$ and
 	\item\label{def:hard-online} $\E_{(I,T)\sim\cD}\bigl[\varphi_A^M(I,T)\bigr]\ge c$ for every deterministic online algorithm~$A$.
 \end{enumerate}
 We call~$c$ the \emph{gap} and~$M$ the \emph{cap}.
@@ -349,16 +349,16 @@ The following statements hold.
 \begin{enumerate}[(a)]
 \item\label{obs:base} Let~$I$ consist of a single job with release time~$0$, size~$2$, and weight~$1$, and let $T=1$. The terminal distribution supported on the single terminal instance $(I,T)$ is $(1,M)$-hard for every $M\ge1$.
 \item\label{obs:monotone} If~$\cD$ is $(c,M)$-hard, then~$\cD$ is $(c',M')$-hard for all $0<c'\le c$ and $M'\ge M$.
-\item\label{obs:scaling} Let $\lambda>0$ and $0<c\le M$, and let~$\cD$ be a terminal distribution such that $\E_{(I,T)\sim\cD}[U^*(I,T)]\le\lambda$ and $\E_{(I,T)\sim\cD}[\varphi_A^{\lambda M}(I,T)]\ge\lambda c$ for every deterministic online algorithm~$A$. Then the distribution of $(I/\lambda,T)$ for $(I,T)\sim\cD$ is $(c,M)$-hard.
+\item\label{obs:scaling} Let $\lambda>0$ and $0<c\le M$, and let~$\cD$ be a terminal distribution such that $\E_{(I,T)\sim\cD}[w^*(I,T)]\le\lambda$ and $\E_{(I,T)\sim\cD}[\varphi_A^{\lambda M}(I,T)]\ge\lambda c$ for every deterministic online algorithm~$A$. Then the distribution of $(I/\lambda,T)$ for $(I,T)\sim\cD$ is $(c,M)$-hard.
 \end{enumerate}
 \end{observation}
 
 \begin{proof}
-\ref{obs:base}~No schedule completes the job by time~$1$, and in every schedule its remaining size at time~$1$ is at least~$1$. Hence $U^*(I,T)=1$ and $\varphi_A^M(I,T)=\min\{M,1\}=1$.
+\ref{obs:base}~No schedule completes the job by time~$1$, and in every schedule its remaining size at time~$1$ is at least~$1$. Hence $w^*(I,T)=1$ and $\varphi_A^M(I,T)=\min\{M,1\}=1$.
 
 \ref{obs:monotone}~The offline condition in~\cref{def:hard}\ref{def:hard-offline} involves neither the gap nor the cap, so it carries over from~$(c,M)$ to~$(c',M')$. For the online condition in~\cref{def:hard}\ref{def:hard-online}, note that $M'\ge M$, so every deterministic online algorithm~$A$ and every terminal instance $(I,T)$ satisfy $\varphi_A^{M'}(I,T)\ge\varphi_A^M(I,T)$. Taking expectations gives $\E_{(I,T)\sim\cD}[\varphi_A^{M'}(I,T)]\ge\E_{(I,T)\sim\cD}[\varphi_A^M(I,T)]\ge c\ge c'$.
 
-\ref{obs:scaling}~Since $U^*(I/\lambda,T)=U^*(I,T)/\lambda$, we have $\E_{(I,T)\sim\cD}[U^*(I/\lambda,T)]\le1$. Let~$A$ be a deterministic online algorithm. As~$A$ need not make the same scheduling decisions on~$I$ and $I/\lambda$, we apply the assumption to the algorithm~$A_\lambda$ that on input~$I$ runs~$A$ on $I/\lambda$ and uses the same rates, that is, $A_\lambda(I)=A(I/\lambda)$. Since $I$ and $I/\lambda$ have the same release times, $A_\lambda$ satisfies the non-anticipation condition. The robust backlogs of~$A$ on $(I/\lambda,T)$ and of~$A_\lambda$ on $(I,T)$ consist of the same jobs up to the scaling of their weights, so $\varphi_A^M(I/\lambda,T)=\varphi_{A_\lambda}^{\lambda M}(I,T)/\lambda$. By assumption, the right-hand side has expectation at least~$c$.
+\ref{obs:scaling}~Since $w^*(I/\lambda,T)=w^*(I,T)/\lambda$, we have $\E_{(I,T)\sim\cD}[w^*(I/\lambda,T)]\le1$. Let~$A$ be a deterministic online algorithm. As~$A$ need not make the same scheduling decisions on~$I$ and $I/\lambda$, we apply the assumption to the algorithm~$A_\lambda$ that on input~$I$ runs~$A$ on $I/\lambda$ and uses the same rates, that is, $A_\lambda(I)=A(I/\lambda)$. Since $I$ and $I/\lambda$ have the same release times, $A_\lambda$ satisfies the non-anticipation condition. The robust backlogs of~$A$ on $(I/\lambda,T)$ and of~$A_\lambda$ on $(I,T)$ consist of the same jobs up to the scaling of their weights, so $\varphi_A^M(I/\lambda,T)=\varphi_{A_\lambda}^{\lambda M}(I,T)/\lambda$. By assumption, the right-hand side has expectation at least~$c$.
 \end{proof}
 
 \paragraph{Flooding.}
@@ -369,7 +369,7 @@ The following lemma turns a gap in active weight at the terminal time into a gap
 Let $(I,T)$ be a terminal instance, let $M>0$, and let $L$ be a positive multiple of $d=1/(2M)$. Construct instance~$\hat I$ by adding jobs of size~$d$ and weight~$1/2$ at times $T,T+d,\dots,T+L-d$ to $I$.
 \begin{enumerate}[(i)]
 \item\label{it:flood-online} Every deterministic online algorithm~$A$ satisfies $F_A(\hat I)\ge L\cdot\varphi_A^M(I,T)$.
-\item\label{it:flood-offline} The optimum satisfies $\OPT(\hat I)\le L\bigl(U^*(I,T)+\tfrac12\bigr)+w(I)\bigl(T+p(I)\bigr)$.
+\item\label{it:flood-offline} The optimum satisfies $\OPT(\hat I)\le L\bigl(w^*(I,T)+\tfrac12\bigr)+w(I)\bigl(T+p(I)\bigr)$.
 \end{enumerate}
 \end{lemma}
 \end{samepage}
@@ -379,7 +379,7 @@ Call the jobs of~$I$ \emph{old} and the added jobs \emph{stream jobs}.
 
 \ref{it:flood-online}~Fix~$A$. Since the stream starts at~$T$, non-anticipation implies that the robust backlog at~$T$ is the same in $A(I)$ and $A(\hat I)$. For $0\le\theta<L$, let~$y$ be the processing that the old jobs receive during $[T,T+\theta)$. If $y<1$, every job in the robust backlog is still active at time~$T+\theta$, so the active weight at this time is at least~$\varphi_A^M(I,T)$. If $y\ge1$, the stream jobs released by time~$T+\theta$ have total size $d(\lfloor\theta/d\rfloor+1)>\theta$ and receive at most $\theta-y$ processing. Their total remaining size therefore exceeds~$y$. More than $y/d$ stream jobs are active, with total weight greater than $y/(2d)=My\ge M\ge\varphi_A^M(I,T)$. Thus the active weight stays at least~$\varphi_A^M(I,T)$ throughout the stream. Integration over time gives $F_A(\hat I)\ge L \cdot \varphi_A^M(I,T)$.
 
-\ref{it:flood-offline}~Until time~$T$, follow a schedule that leaves weight $U^*(I,T)$ unfinished. Then, process every stream job immediately after its release, and after the stream finish the remaining old jobs. The old jobs contribute at most $w(I) \cdot T$ before~$T$, exactly $L\cdot U^*(I,T)$ during the stream, and at most $w(I) \cdot p(I)$ afterwards. The stream jobs contribute $L/2$. Adding these terms proves the bound.
+\ref{it:flood-offline}~Until time~$T$, follow a schedule that leaves weight $w^*(I,T)$ unfinished. Then, process every stream job immediately after its release, and after the stream finish the remaining old jobs. The old jobs contribute at most $w(I) \cdot T$ before~$T$, exactly $L\cdot w^*(I,T)$ during the stream, and at most $w(I) \cdot p(I)$ afterwards. The stream jobs contribute $L/2$. Adding these terms proves the bound.
 \end{proof}
 
 It remains to find hard terminal distributions with arbitrarily large gaps. Their existence is our main technical result, which we prove in~\cref{sec:construction}.
@@ -472,7 +472,7 @@ where the first identity also holds for~$i=0$. In particular, $V=S_0$ will bound
 Let~$\cD$ be a $(c,M)$-hard terminal distribution, and let~$\bar I$ be the concatenation of $m$ copies formed from independent samples $(I_1,T_1),\dots,(I_m,T_m)$ from~$\cD$, with end~$\tau$, as in~\cref{def:concatenation}. Part~\ref{it:geometry} holds for every terminal distribution~$\cD$, hard or not.
 \begin{enumerate}[(i)]
 \item\label{it:geometry} The jobs of copy~$i$ are released during $[u_{i-1},u_i)$. For every $i\in\{0,\dots,m\}$, copies $i+1,\dots,m$ have total size at most~$S_i$, and $\tau-u_i\le S_i$. In particular, $p(\bar I)\le V$ and $\tau\le V$.
-\item\label{it:offline} There is a schedule of~$\bar I$ in which, for every $i\in[m]$, the jobs of copy~$i$ that are active at time~$\tau$ have total weight $B_i=U^*(I_i,T_i)$. Moreover, $\E_{(I_i,T_i)\sim\cD}[B_i]\le1$.
+\item\label{it:offline} There is a schedule of~$\bar I$ in which, for every $i\in[m]$, the jobs of copy~$i$ that are active at time~$\tau$ have total weight $B_i=w^*(I_i,T_i)$. Moreover, $\E_{(I_i,T_i)\sim\cD}[B_i]\le1$.
 \item\label{it:online} Let~$A$ be a deterministic online algorithm. For $i\in[m]$, let~$E_i$ be the set of jobs of copy~$i$ whose remaining size at time~$u_i$ in $A(\bar I)$ is at least~$s_i$, and let $X_i=\min\{M,w(E_i)\}$. Then $X_i$ is determined by $(I_1,T_1),\dots,(I_i,T_i)$. For every realization $(I_1,T_1),\ldots,(I_{i-1},T_{i-1})$ of the preceding $i-1$ samples of positive probability, it holds that
 \begin{equation*}
   \E_{(I_i,T_i)\sim\cD}\bigl[X_i\bigm|(I_1,T_1),\dots,(I_{i-1},T_{i-1})\bigr]\ge c\,.
@@ -484,7 +484,7 @@ Moreover, every job of~$E_i$ has remaining size at least $S_i+2$ at time~$\tau$.
 \begin{proof}
 \ref{it:geometry}~A job of copy~$i$ is released at time $u_{i-1}+s_ir_j$ with $0\le r_j<T_i$, hence during $[u_{i-1},u_i)$. For each $i'\in[m]$, copy~$i'$ has total size $s_{i'}\cdot p(I_{i'})\le Hs_{i'}$, and $u_{i'}-u_{i'-1}=s_{i'}T_{i'}\le Hs_{i'}$. Summing over $i'>i$ and using~\eqref{eq:scales}, we find that copies $i+1,\dots,m$ have total size at most~$S_i$ and that $\tau-u_i\le S_i$. The case $i=0$ gives $p(\bar I)\le V$ and $\tau\le V$.
 
-\ref{it:offline}~During $[u_{i-1},u_i)$, process copy~$i$ by a schedule of~$I_i$ that leaves weight $B_i=U^*(I_i,T_i)$ unfinished at~$T_i$, stretched in time and size by~$s_i$, and do not process copy~$i$ afterwards. Stretching preserves feasibility, and the time windows are disjoint, so these schedules combine into a schedule of~$\bar I$ that leaves weight~$B_i$ of each copy~$i$ unfinished at~$\tau$. Since $(I_i,T_i)$ is a sample from the $(c,M)$-hard distribution~$\cD$, we have $\E_{(I_i,T_i)\sim\cD}[B_i]=\E_{(I_i,T_i)\sim\cD}[U^*(I_i,T_i)]\le1$ by~\cref{def:hard}\ref{def:hard-offline}.
+\ref{it:offline}~During $[u_{i-1},u_i)$, process copy~$i$ by a schedule of~$I_i$ that leaves weight $B_i=w^*(I_i,T_i)$ unfinished at~$T_i$, stretched in time and size by~$s_i$, and do not process copy~$i$ afterwards. Stretching preserves feasibility, and the time windows are disjoint, so these schedules combine into a schedule of~$\bar I$ that leaves weight~$B_i$ of each copy~$i$ unfinished at~$\tau$. Since $(I_i,T_i)$ is a sample from the $(c,M)$-hard distribution~$\cD$, we have $\E_{(I_i,T_i)\sim\cD}[B_i]=\E_{(I_i,T_i)\sim\cD}[w^*(I_i,T_i)]\le1$ by~\cref{def:hard}\ref{def:hard-offline}.
 
 \ref{it:online}~Fix $i\in[m]$ and a realization of the first $i-1$ samples $(I_1,T_1),\dots,(I_{i-1},T_{i-1})$ of positive probability. This fixes copies $1,\dots,i-1$, their union~$\bar I_{<i}$, and the time~$u_{i-1}$. With these copies fixed, the behavior of~$A$ on copy~$i$ defines a deterministic online algorithm~$A_i$ for the unstretched sample~$I_i$. Since~$(I_i,T_i)$ is a fresh sample from~$\cD$, the hardness of~$\cD$ applies to~$A_i$.
 
@@ -543,14 +543,14 @@ The terminal time for the new distribution is the checkpoint~$h_K$ for a random 
 because the left-hand side equals $2^{1-b}-2^{1-k}$ and $\Pr[K>b]=2^{-b}$ for $b<k$, and both sides vanish for $b=k$. Moreover, $\E[K]=\sum_{i=1}^k\Pr[K\ge i]=2-2^{1-k}$ and $\Pr[K=k]=2^{1-k}$. Let $\beta :=\E[K]-\Pr[K=k]=2-2^{2-k}$. The \emph{amplified} terminal distribution $\Amp_M(\cD)$ is the distribution of $\bigl((\bar I\cup\{J\})/\beta,h_K\bigr)$.
 
 \begin{lemma}\label{lem:amplification}
-Let $M\ge1$ be an integer, $k=2M+1$, and $\eta=2^{-k}$. If~$\cD$ is $(c,M)$-hard, then $\Amp_M(\cD)$ is $((1+\eta)c,(k+1)M)$-hard. Moreover, every terminal instance $(I,T)$ in its support satisfies $U^*(I,T)\le2M$.
+Let $M\ge1$ be an integer, $k=2M+1$, and $\eta=2^{-k}$. If~$\cD$ is $(c,M)$-hard, then $\Amp_M(\cD)$ is $((1+\eta)c,(k+1)M)$-hard. Moreover, every terminal instance $(I,T)$ in its support satisfies $w^*(I,T)\le2M$.
 \end{lemma}
 
 \begin{proof}
 All jobs of $\bar I\cup\{J\}$ are released by time $\tau<h_K$, and the support is finite, so $\Amp_M(\cD)$ is a terminal distribution. We show that, before the weights are divided by~$\beta$,
 \begin{subequations}\label{eq:amp-goal}
 \begin{align}
-  \E\bigl[U^*(\bar I\cup\{J\},h_K)\bigr]&\le\beta\,,\label{eq:amp-goal-offline}\\*
+  \E\bigl[w^*(\bar I\cup\{J\},h_K)\bigr]&\le\beta\,,\label{eq:amp-goal-offline}\\*
   \E\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigr]&\ge c\cdot \E[K]\,,\label{eq:amp-goal-online}
 \end{align}
 \end{subequations}
@@ -568,17 +568,17 @@ With~\eqref{eq:amp-goal-offline}, this verifies the assumptions of~\cref{obs:bas
 
 \emph{Proof of~\eqref{eq:amp-goal-offline}.} Follow the schedule of~\cref{lem:copies}\ref{it:offline} until~$\tau$, which leaves weight~$B_j$ of copy~$j$ unfinished at~$\tau$, where $\E[B_j]\le1$. By the choice of~$h_i$, it can then complete during $[\tau,h_i)$ either~$J$ and the remaining jobs of copies $i+1,\dots,k$, or all remaining jobs of~$\bar I$. Thus
 \begin{equation*}
-  U^*(\bar I\cup\{J\},h_i)\le\min\left\{\sum_{j\le i}B_j,\,2M\right\}\,.
+  w^*(\bar I\cup\{J\},h_i)\le\min\left\{\sum_{j\le i}B_j,\,2M\right\}\,.
 \end{equation*}
-In particular, $U^*(\bar I\cup\{J\},h_K)\le2M$ for every realization of the copies and~$K$. Dividing the weights by~$\beta\ge1$ gives $U^*(I,T)\le2M$ for every terminal instance $(I,T)$ in the support of~$\Amp_M(\cD)$, which is the second claim of the lemma.
+In particular, $w^*(\bar I\cup\{J\},h_K)\le2M$ for every realization of the copies and~$K$. Dividing the weights by~$\beta\ge1$ gives $w^*(I,T)\le2M$ for every terminal instance $(I,T)$ in the support of~$\Amp_M(\cD)$, which is the second claim of the lemma.
 
 To bound the expectation, fix $i\in[k]$. Since~$K$ is independent of the copies, $\E[B_j\mid K=i]=\E[B_j]\le1$ for every~$j$. As the minimum is at most each of its arguments, taking conditional expectations yields
 \begin{equation*}
-  \E\bigl[U^*(\bar I\cup\{J\},h_K)\bigm|K=i\bigr]\le\min\left\{\sum_{j\le i}\E[B_j\mid K=i],\,2M\right\}\le\min\{i,2M\}\,.
+  \E\bigl[w^*(\bar I\cup\{J\},h_K)\bigm|K=i\bigr]\le\min\left\{\sum_{j\le i}\E[B_j\mid K=i],\,2M\right\}\le\min\{i,2M\}\,.
 \end{equation*}
 Averaging over~$K$ and using $2M=k-1$ gives
 \begin{equation*}
-  \E\bigl[U^*(\bar I\cup\{J\},h_K)\bigr]\le\E[\min\{K,k-1\}]=\E[K]-\Pr[K=k]=\beta\,.
+  \E\bigl[w^*(\bar I\cup\{J\},h_K)\bigr]\le\E[\min\{K,k-1\}]=\E[K]-\Pr[K=k]=\beta\,.
 \end{equation*}
 
 
@@ -588,25 +588,26 @@ Let $b\in\{0,\dots,k\}$ be the largest index~$j$ such that~$J$ is not robust at~
 
 We claim that for every $j\le b$, all jobs of~$E_j$ are robust at every checkpoint~$h_i$ with $i\ge j$. Indeed, $J$ is not robust at~$h_j$, so it received more than $V-1$ processing during $[\tau,h_j)$, which leaves less than $(V+S_j)-(V-1)=S_j+1$ processing for the jobs of~$\bar I$. Every job of~$E_j$ therefore has remaining size greater than~$1$ at~$h_j$, and hence also at every earlier checkpoint~$h_i$ with $i\ge j$.
 
-Fix a checkpoint~$h_i$. By the claim, its robust backlog contains the sets~$E_j$ with $j\le\min\{i,b\}$, and it contains~$J$ if $i>b$. The sets $E_1,\dots,E_k$ and~$\{J\}$ are pairwise disjoint, and $X_j\le w(E_j)$, so the weight of the robust backlog at~$h_i$ is at least
+Now fix a checkpoint~$h_i$. By the claim, its robust backlog contains the sets~$E_j$ with $j\le\min\{i,b\}$, and it contains~$J$ if $i>b$. The sets $E_1,\dots,E_k$ and~$\{J\}$ are pairwise disjoint, and $X_j\le w(E_j)$, so the weight of the robust backlog at~$h_i$ is at least
 \begin{equation*}
-  \sum_{j\le\min\{i,b\}}X_j+2M\cdot\bone_{\{i>b\}}\,.
+  Y_i:=\sum_{j\le\min\{i,b\}}X_j+2M\cdot\bone_{\{i>b\}}\,.
 \end{equation*}
-This sum is also at most $(k+1)M$. Indeed, since $X_j\le M$, it is at most~$kM$ if $i\le b$, and at most $(k-1)M+2M$ if $i>b$, because then $b\le k-1$. The capped robust backlog $\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_i)$ is the minimum of $(k+1)M$ and the weight of the robust backlog at~$h_i$, so the sum is a lower bound on it.
+We also have $Y_i\le(k+1)M$. Indeed, since $X_j\le M$, the sum~$Y_i$ is at most~$kM$ if $i\le b$, and at most $(k-1)M+2M$ if $i>b$, because then $b\le k-1$. The capped robust backlog $\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_i)$ is the minimum of $(k+1)M$ and the weight of the robust backlog at~$h_i$, and therefore at least~$Y_i$.
 
-We now take expectations, first over~$K$ with~$Z$ fixed. The copies, the schedule, the index~$b$, and the values~$X_j$ remain fixed, and the distribution of~$K$ is unchanged because~$K$ is independent of~$Z$. A copy $j\le b$ contributes~$X_j$ whenever $K\ge j$, and~$J$ contributes~$2M$ whenever $K>b$, so
+We now take expectations, first over~$K$ with~$Z$ fixed. The copies, the schedule, the index~$b$, and the values~$X_j$ remain fixed, and the distribution of~$K$ is unchanged because~$K$ is independent of~$Z$. In~$Y_K$, a copy $j\le b$ contributes~$X_j$ whenever $K\ge j$, and~$J$ contributes~$2M$ whenever $K>b$, so
 \begin{align*}
   \E_K\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigm|Z\bigr]
-  &\ge\sum_{j\le b}\Pr[K\ge j]\cdot X_j+2M \cdot \Pr[K>b]\\*
+  \ge\E_K\bigl[Y_K\bigm|Z\bigr]
+  &=\sum_{j\le b}\Pr[K\ge j]\cdot X_j+2M \cdot \Pr[K>b]\\*
   &\ge\sum_{j=1}^k\Pr[K\ge j]\cdot X_j\,.
 \end{align*}
-In the second inequality, the heavy job makes up for the copies $j>b$. These satisfy $X_j\le M$, and the tail bound~\eqref{eq:tail} shows that $\sum_{j>b}\Pr[K\ge j]$ is at most $2\Pr[K>b]$.
+In the last inequality, the heavy job makes up for the copies $j>b$. These satisfy $X_j\le M$, and the tail bound~\eqref{eq:tail} shows that $\sum_{j>b}\Pr[K\ge j]$ is at most $2\Pr[K>b]$.
 
 We now average over~$Z\sim\cD^k$. Since~$X_j$ is determined by the first~$j$ samples, averaging the conditional bound of~\cref{lem:copies}\ref{it:online} over the first $j-1$ samples gives $\E_{Z\sim\cD^k}[X_j]\ge c$ for every~$j$. The law of total expectation therefore yields
 \begin{align*}
   \E_{Z,K}\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigr]
-  &=\E_{Z\sim\cD^k}\Bigl[\E_K\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigm|Z\bigr]\Bigr]\\*
-  &\ge\sum_{j=1}^k\Pr[K\ge j]\cdot \E_{Z\sim\cD^k}[X_j]\\*
+  &=\E_{Z\sim\cD^k}\Bigl[\E_K\bigl[\varphi_A^{(k+1)M}(\bar I\cup\{J\},h_K)\bigm|Z\bigr]\Bigr]\\
+  &\ge\sum_{j=1}^k\Pr[K\ge j]\cdot \E_{Z\sim\cD^k}[X_j]\\
   &\ge c\sum_{j=1}^k\Pr[K\ge j]=c\cdot \E_K[K]\,.
 \end{align*}
 This is~\eqref{eq:amp-goal-online} and thus completes the proof.
@@ -617,20 +618,20 @@ This is~\eqref{eq:amp-goal-online} and thus completes the proof.
 For a terminal distribution~$\cD$ with a bound~$H$ and a positive integer~$m$, the \emph{averaged} terminal distribution $\Avg_m(\cD)$ is the distribution of the terminal instance $(\bar I/m,\tau)$, where~$\bar I$ is the concatenation of~$m$ copies of~$\cD$ (\cref{def:concatenation}), formed with the bound~$H$, and~$\tau$ is its end.
 
 \begin{lemma}\label{lem:averaging}
-Let~$\cD$ be a $(c,M)$-hard terminal distribution and let~$m$ be a positive integer. For $(I,T)\sim\Avg_m(\cD)$, we have $\E[U^*(I,T)]\le1$ and $\E[\varphi_A^c(I,T)]\ge c-\frac{M}{\sqrt m}$
+Let~$\cD$ be a $(c,M)$-hard terminal distribution and let~$m$ be a positive integer. For $(I,T)\sim\Avg_m(\cD)$, we have $\E[w^*(I,T)]\le1$ and $\E[\varphi_A^c(I,T)]\ge c-\frac{M}{\sqrt m}$
 for every deterministic online algorithm~$A$.
 In particular, if $c>M/\sqrt m$, then $\Avg_m(\cD)$ is $(c-M/\sqrt m,c)$-hard.
 \end{lemma}
 
 
 \begin{proof}
-All jobs of~$\bar I$ are released before~$\tau$ by~\cref{lem:copies}\ref{it:geometry}, so $\Avg_m(\cD)$ is a terminal distribution. For every instance $I$, we have $U^*(I/m,T)=U^*(I,T)/m$. Moreover, for a deterministic online algorithm~$A$, the algorithm~$A'$ with $A'(I)=A(I/m)$ is a deterministic online algorithm with $\varphi_{A'}^{cm}(\bar I,\tau)=m\cdot\varphi_A^c(\bar I/m,\tau)$, as in the proof of~\cref{obs:basic}\ref{obs:scaling}. It therefore suffices to show that
+All jobs of~$\bar I$ are released before~$\tau$ by~\cref{lem:copies}\ref{it:geometry}, so $\Avg_m(\cD)$ is a terminal distribution. For every instance $I$, we have $w^*(I/m,T)=w^*(I,T)/m$. Moreover, for a deterministic online algorithm~$A$, the algorithm~$A'$ with $A'(I)=A(I/m)$ is a deterministic online algorithm with $\varphi_{A'}^{cm}(\bar I,\tau)=m\cdot\varphi_A^c(\bar I/m,\tau)$, as in the proof of~\cref{obs:basic}\ref{obs:scaling}. It therefore suffices to show that
 \begin{equation*}
-  \E[U^*(\bar I,\tau)]\le m
+  \E[w^*(\bar I,\tau)]\le m
   \qquad\text{and}\qquad
   \E[\varphi_A^{cm}(\bar I,\tau)]\ge cm-M\sqrt m
 \end{equation*}
-for every deterministic online algorithm~$A$. The first bound holds because \cref{lem:copies}\ref{it:offline} gives $U^*(\bar I,\tau)\le B_1+\dots+B_m$ with $\E[B_i]\le1$.
+for every deterministic online algorithm~$A$. The first bound holds because \cref{lem:copies}\ref{it:offline} gives $w^*(\bar I,\tau)\le B_1+\dots+B_m$ with $\E[B_i]\le1$.
 
 To show the second bound, fix a deterministic online algorithm~$A$, and let~$E_i$ and~$X_i$ be as in~\cref{lem:copies}\ref{it:online}. Every job of~$E_i$ has remaining size at least $S_i+2\ge2$ at~$\tau$, so the robust backlog at~$\tau$ contains the pairwise disjoint sets $E_1,\dots,E_m$. Since $X_i\le w(E_i)$, we obtain
 \begin{equation*}
@@ -659,21 +660,23 @@ Fix $\rho\ge1$ and let $M=\lceil4\rho\rceil$. This will be the cap of the distri
   m=\left(\frac{2(k+1)M}{\eta}\right)^2,\qquad
   N=\frac{M-2}{\eta}\,.
 \end{equation*}
-Here~$k$ and~$\eta$ are the parameters of~\cref{lem:amplification}, and~$m$ is chosen so that averaging an input with cap $(k+1)M$ loses at most $(k+1)M/\sqrt m=\eta/2$ by~\cref{lem:averaging}. Since $M\ge4$ and $1/\eta=2^k$, both~$m$ and~$N$ are positive integers. Let~$\cD_0$ be the single-job distribution of~\cref{obs:basic}\ref{obs:base}, and for $q=1,\dots,N$ let
+Here~$k$ and~$\eta$ are the parameters of~\cref{lem:amplification}, and~$m$ is chosen so that averaging an input with cap $(k+1)M$ loses at most $(k+1)M/\sqrt m=\eta/2$ by~\cref{lem:averaging}. Since $M\ge4$ and $1/\eta=2^k$, both~$m$ and~$N$ are positive integers. Let~$\cD_0$ be the single-job distribution of~\cref{obs:basic}\ref{obs:base}, and for $q=1,\dots,N$ define iteratively the distribution
 \begin{equation*}
   \cD_q=\Avg_m(\Amp_M(\cD_{q-1}))\,.
 \end{equation*}
-We call one amplification followed by one averaging a \emph{round}, so~$N$ is the number of rounds. Both operations depend on a bound for their input distribution through the scales of~\cref{def:concatenation}. \Cref{lem:amplification,lem:averaging} hold for any bound, and we fix specific bounds in~\cref{sec:quantitative}.
+We call one amplification followed by one averaging a \emph{round}, so~$N$ is the number of rounds. Both operations depend on a bound for their input distribution through the scales of~\cref{def:concatenation}. \Cref{lem:amplification,lem:averaging} hold for any bound, and we fix specific bounds in~\cref{sec:parameters}.
 
 We show by induction on~$q$ that~$\cD_q$ is $(c_q,M)$-hard, where $c_q=1+q\eta/2$. For $q=0$, this is~\cref{obs:basic}\ref{obs:base}. Let $q\in[N]$, and suppose that~$\cD_{q-1}$ is $(c_{q-1},M)$-hard. By~\cref{lem:amplification}, amplification gives gap $(1+\eta)c_{q-1}$ and cap $(k+1)M$. By~\cref{lem:averaging}, averaging then loses at most $(k+1)M/\sqrt m=\eta/2$ from the gap and reduces the cap to $(1+\eta)c_{q-1}$. Since $c_{q-1}\ge1$, the gap of~$\cD_q$ is at least
 \begin{equation*}
   (1+\eta)c_{q-1}-\eta/2\ge c_{q-1}+\eta/2=c_q\,.
 \end{equation*}
-Its cap satisfies $(1+\eta)c_{q-1}<M$, because $c_{q-1}<c_N=M/2$ and $\eta<1$. By~\cref{obs:basic}\ref{obs:monotone}, $\cD_q$ is $(c_q,M)$-hard. Finally, $c_N=M/2\ge2\rho$, which proves~\cref{thm:hard}.
+Its cap satisfies $(1+\eta)c_{q-1}<M$, because $c_{q-1}<c_N=M/2$ and $\eta<1$. By~\cref{obs:basic}\ref{obs:monotone}, $\cD_q$ is $(c_q,M)$-hard. Finally, we have $c_N=M/2\ge2\rho$, which proves~\cref{thm:hard}. \qed
 
 \section{Quantitative Bounds and Extensions}\label{sec:quantitative}
 
-We first bound the parameters of our instances and prove~\cref{thm:quant}. We then prove the high-probability bound of~\cref{thm:probability} in~\cref{sec:probability} and the bound for nearly known instances of~\cref{thm:interarrival} in~\cref{sec:interarrival}.
+We bound the parameters of our instances and prove~\cref{thm:quant} in~\cref{sec:parameters}. We then prove the high-probability bound of~\cref{thm:probability} in~\cref{sec:probability} and the bound for nearly known instances of~\cref{thm:interarrival} in~\cref{sec:interarrival}.
+
+\subsection{Parameter Bounds}\label{sec:parameters}
 
 For an instance~$I$, let $W(I)=\max_{j\in I}w_j/\min_{j\in I}w_j$ and $P(I)=\max_{j\in I}p_j/\min_{j\in I}p_j$ be its weight and size ratios. Let $D(I)=\max_{j\in I}(w_j/p_j)/\min_{j\in I}(w_j/p_j)$ be its density ratio, and let~$|I|$ be its number of jobs. Bounding these parameters in the construction of~\cref{sec:iteration} gives the following refinement of~\cref{thm:main}.
 
@@ -729,7 +732,7 @@ Otherwise, let~$\hat\cD$ be the distribution of~\cref{thm:quant-refined}. By~\cr
 and $\E_{A\sim\cA}[F_A(I)]\ge \rho\cdot\OPT(I)$. Since $\OPT(I)>0$, the algorithm~$\cA$ is not $\rho'$-competitive on this class of instances for any $\rho'<\rho$, which proves the claimed lower bound.
 \end{proof}
 
-\subsection{A High-Probability Lower Bound}\label{sec:probability}
+\subsection{High-Probability Bounds}\label{sec:probability}
 
 The last averaging step also yields the high-probability lower bound of~\cref{thm:probability}.
 
@@ -745,15 +748,15 @@ for every deterministic online algorithm~$A$. Since $\varphi_A^M\ge\varphi_A^{M/
   \le\frac{\eta}{2\rho}\,.
 \end{equation*}
 
-To bound the offline active weight, let $B_1,\dots,B_m$ be the values of~$U^*$ on the independent amplified samples entering the last averaging step. By~\cref{lem:amplification}, $0\le B_i\le2M$ and $\E[B_i]\le1$, so $\operatorname{Var}(B_i)\le\E[B_i^2]\le2M$. The offline schedule of~\cref{lem:copies}\ref{it:offline}, with weights divided by~$m$, gives $U^*(I,T)\le m^{-1}\sum_iB_i$. Independence and Chebyshev's inequality therefore imply
+To bound the offline active weight, let $B_1,\dots,B_m$ be the values of~$w^*$ on the independent amplified samples entering the last averaging step. By~\cref{lem:amplification}, $0\le B_i\le2M$ and $\E[B_i]\le1$, so $\operatorname{Var}(B_i)\le\E[B_i^2]\le2M$. The offline schedule of~\cref{lem:copies}\ref{it:offline}, with weights divided by~$m$, gives $w^*(I,T)\le m^{-1}\sum_iB_i$. Independence and Chebyshev's inequality therefore imply
 \begin{equation*}
-  \Pr\bigl[U^*(I,T)>2\bigr]\le\frac{2M}{m}\,.
+  \Pr\bigl[w^*(I,T)>2\bigr]\le\frac{2M}{m}\,.
 \end{equation*}
 Since $\eta/(2\rho)\le\eta/2$ and $2M/m=\eta^2/(2(k+1)^2M)\le\eta/2$, every deterministic~$A$ satisfies
 \begin{equation*}
   \varphi_A^M(I,T)\ge3\rho
   \qquad\text{and}\qquad
-  U^*(I,T)\le2
+  w^*(I,T)\le2
 \end{equation*}
 with probability at least $1-\eta\ge1-2^{-\rho}$, where the last inequality uses $k\ge\rho$.
 
@@ -811,9 +814,10 @@ The single-job distribution~$\cD_0$ is $\eps$-predictable, since its job is rele
 The distribution of~$\hat I$ is the distribution~$\hat\cD$ in the proofs of~\cref{thm:quant-refined,thm:probability}, applied with~$2\rho$ and the new value of~$H_0$. Every deterministic online algorithm~$A$ therefore satisfies $\E[F_A(\hat I)]\ge2\rho\cdot\E[\OPT(\hat I)]$ and $\Pr[F_A(\hat I)\ge\rho\cdot \OPT(\hat I)]\ge1-2^{-\rho}$. The parameter bounds change only through~$H_N$, for which now $\log\log H_N=N\log(6km)+\log\log H_0$. Hence they hold with a constant~$C$ that depends only on~$\eps$, and~$C$ can be chosen independently of~$\eps$ whenever $\eps\ge2^{-2^{2^\rho}}$.
 \end{proof}
 
-\section{Concluding Remarks}\label{sec:conclusion}
 
-We have shown that randomization does not allow a constant competitive ratio for online weighted flow time on a single machine. Our lower bound $\Omega(\min\{\log\log W,\log\log\log\min\{P,D,n\}\})$ is exponentially weaker in~$W$ and~$P$ than the deterministic lower bound of Bansal and Chan~\cite{BansalC09}, and the best known upper bound is $O(\log\min\{P,D,W\})$~\cite{AzarT18}. The loss stems from amplification, which improves the gap only by a factor of $1+2^{-\Theta(M)}$ for cap~$M$. An improvement that is polynomially small in the cap would give lower bounds polynomial in $\log W$ and $\log\log P$. It remains open whether randomized algorithms can beat the deterministic lower bound. In terms of the number~$n$ of jobs alone, it is also open whether a single machine admits an $O(\log n)$-competitive algorithm.
+\section*{AI Declaration}
+
+The first version of the lower bound construction in this paper was found by GPT~6 Astra, after the author suggested the idea of hiding the heavy job in the input distribution. Before this hint, the model was unable to prove the lower bound. The author then refined and simplified the proof in several rounds with the help of Claude Opus~5.5 and Claude Fable~5.2, which were also used to revise the text. The author has checked all statements and proofs and takes full responsibility for the content of this paper.
 
 \printbibliography
 
