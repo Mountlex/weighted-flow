@@ -490,7 +490,7 @@ Moreover, every job of~$E_i$ has remaining size at least $S_i+2$ at time~$\tau$.
 
 \ref{it:offline}~During $[u_{i-1},u_i)$, process copy~$i$ by a schedule of~$I_i$ that leaves weight $B_i=w^*(I_i,T_i)$ unfinished at~$T_i$, stretched in time and size by~$s_i$, and do not process copy~$i$ afterwards. Stretching preserves feasibility, and the time windows are disjoint, so these schedules combine into a schedule of~$\bar I$ that leaves weight~$B_i$ of each copy~$i$ unfinished at~$\tau$. If~$\cD$ is $(c,M)$-hard, then $(I_i,T_i)$ is a sample from a hard distribution, so $\E_{(I_i,T_i)\sim\cD}[B_i]=\E_{(I_i,T_i)\sim\cD}[w^*(I_i,T_i)]\le1$ by~\cref{def:hard}\ref{def:hard-offline}.
 
-\ref{it:online}~Fix $i\in[m]$ and a realization of the first $i-1$ samples $(I_1,T_1),\dots,(I_{i-1},T_{i-1})$ of positive probability. This fixes copies $1,\dots,i-1$, their union~$\bar I_{<i}$, and the time~$u_{i-1}$. With these copies fixed, the behavior of~$A$ on copy~$i$ defines a deterministic online algorithm~$A_i$ for the unstretched sample~$I_i$. Since~$(I_i,T_i)$ is a fresh sample from~$\cD$, the hardness of~$\cD$ applies to~$A_i$.
+\ref{it:online}~Fix $i\in[m]$ and a realization $(I_1,T_1),\dots,(I_{i-1},T_{i-1})$ of the first $i-1$ samples as in the statement. This fixes copies $1,\dots,i-1$, their union~$\bar I_{<i}$, and the time~$u_{i-1}$. With these copies fixed, the behavior of~$A$ on copy~$i$ defines a deterministic online algorithm~$A_i$ for the unstretched sample~$I_i$. Since~$(I_i,T_i)$ is a fresh sample from~$\cD$, the hardness of~$\cD$ applies to~$A_i$.
 
 To define~$A_i$, let $\sigma_i(j)=(u_{i-1}+s_ir_j,\,s_ip_j,\,w_j)$ for a job $j=(r_j,p_j,w_j)$, and let $\sigma_i(I)=\{\sigma_i(j):j\in I\}$ for an instance~$I$. Thus copy~$i$ is~$\sigma_i(I_i)$. On input~$I$, algorithm~$A_i$ runs~$A$ on $\bar I_{<i}\cup\sigma_i(I)$ and, at time~$t$, gives each job $j\in I$ the rate that~$A$ gives~$\sigma_i(j)$ at time $u_{i-1}+s_it$. Processing that~$A$ assigns to~$\bar I_{<i}$ becomes idle time for~$A_i$. Since time and sizes are stretched by the same factor~$s_i$, these rates form a schedule of~$I$, and the remaining size of~$j$ at time~$t$ in $A_i(I)$ is the remaining size of~$\sigma_i(j)$ at time $u_{i-1}+s_it$ in $A(\bar I_{<i}\cup\sigma_i(I))$, divided by~$s_i$. Moreover, $A_i$ is a deterministic online algorithm. If two inputs contain the same jobs with release times before~$t$, then the instances on which~$A$ runs contain the same jobs with release times before $u_{i-1}+s_it$, so~$A_i$ inherits non-anticipation from~$A$.
 
@@ -551,7 +551,7 @@ Let $M\ge1$ be an integer, $k=2M+1$, and $\eta=2^{-k}$. If~$\cD$ is $(c,M)$-hard
 \end{lemma}
 
 \begin{proof}
-All jobs of $\bar I\cup\{J\}$ are released by time $\tau<h_K$, and the support is finite, so $\Amp_M(\cD)$ is a terminal distribution. We show that, before the weights are divided by~$\beta$,
+All jobs of $\bar I\cup\{J\}$ are released by time $\tau<h_K$, so $\Amp_M(\cD)$ is a terminal distribution. We show that, before the weights are divided by~$\beta$,
 \begin{subequations}\label{eq:amp-goal}
 \begin{align}
   \E\bigl[w^*(\bar I\cup\{J\},h_K)\bigr]&\le\beta\,,\label{eq:amp-goal-offline}\\*
@@ -647,7 +647,7 @@ We bound~$\E[\Delta_m^2]$ by induction over the copies. For $i=0,\dots,m$, let $
 \begin{equation*}
   \Delta_i^2\le(\Delta_{i-1}+c-X_i)^2\le \Delta_{i-1}^2+2\Delta_{i-1}(c-X_i)+M^2\,.
 \end{equation*}
-Fix a realization of the first $i-1$ samples of positive probability. By~\cref{lem:copies}\ref{it:online}, these samples determine $X_1,\dots,X_{i-1}$ and hence the value $\Delta_{i-1}\ge0$. By the same lemma, the conditional expectation of~$X_i$ given these samples is at least~$c$. Therefore
+Fix a realization of the first $i-1$ samples. By~\cref{lem:copies}\ref{it:online}, these samples determine $X_1,\dots,X_{i-1}$ and hence the value $\Delta_{i-1}\ge0$. By the same lemma, the conditional expectation of~$X_i$ given these samples is at least~$c$. Therefore
 \begin{equation*}
   \E\bigl[2\Delta_{i-1}(c-X_i)\bigm|(I_1,T_1),\dots,(I_{i-1},T_{i-1})\bigr]
   =2\Delta_{i-1}\Bigl(c-\E\bigl[X_i\bigm|(I_1,T_1),\dots,(I_{i-1},T_{i-1})\bigr]\Bigr)\le0\,.
@@ -778,7 +778,7 @@ We now flood~$\cD_N$ with the stream length $L=2H_N^2+2$ from the proof of~\cref
   \ge3\rho L-\rho\bigl(\tfrac52L+H_N^2\bigr)
   =\rho(L/2-H_N^2)=\rho>0\,.
 \end{equation*}
-Thus the resulting finite distribution~$\hat\cD$ satisfies $\Pr_{\hat I\sim\hat\cD}[F_A(\hat I)\ge \rho\cdot \OPT(\hat I)]\ge1-2^{-2^\rho}$ for every deterministic~$A$. The parameter bounds follow from the proof of~\cref{thm:quant-refined}, with an absolute constant enlarged to account for the use of~$2\rho$.
+Thus the resulting distribution~$\hat\cD$ satisfies $\Pr_{\hat I\sim\hat\cD}[F_A(\hat I)\ge \rho\cdot \OPT(\hat I)]\ge1-2^{-2^\rho}$ for every deterministic~$A$. The parameter bounds follow from the proof of~\cref{thm:quant-refined}, with an absolute constant enlarged to account for the use of~$2\rho$.
 
 Finally, average over $A\sim\cA$. Since~$\hat\cD$ has finite support, we may exchange the expectations over the algorithm and the instance, giving
 \begin{equation*}
